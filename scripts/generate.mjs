@@ -228,7 +228,7 @@ async function header() {
     { x: 642, y: 104, l: 'RUST' },
     { x: 614, y: 168, l: 'TYPESCRIPT' },
     { x: 586, y: 232, l: 'REACT & NEXT' },
-    { x: 558, y: 296, l: 'DOCKER & AI' },
+    { x: 558, y: 296, l: 'DOCKER & CLOUD' },
   ].map(({ x, y, l }, i) => {
     const bw = tw(l, 9.5, true, 1.5) + 30;
     return `
@@ -328,11 +328,11 @@ async function header() {
   <!-- Subtitle with Shuriken separators -->
   ${text(70, 298, 'Full-Stack Developer', { size: 20, fill: C.text, weight: 600, ls: 0.4 })}
   ${shurikenAt(278, 291, 6)}
-  ${text(296, 298, 'Systems & AI Engineer', { size: 20, fill: C.soft, weight: 500, ls: 0.4 })}
+  ${text(296, 298, 'Systems Engineer', { size: 20, fill: C.soft, weight: 500, ls: 0.4 })}
 
   ${chipSvg}
   ${p.front}`;
-  return doc(W, H, 'Patrick Josh Añedez - Full-Stack Developer, Systems & AI Engineer', body);
+  return doc(W, H, 'Patrick Josh Añedez - Full-Stack Developer & Systems Engineer', body);
 }
 
 /* ======================================================= SECTION TITLES */
@@ -393,7 +393,7 @@ function dossier() {
     ['EDUCATION', 'BSIT · Bukidnon State University'],
     ['LOCATION', 'Malaybalay City, Philippines'],
     ['LEADERSHIP', 'Lead Architect (CMS-V2) · Lead Dev (COMSOC)'],
-    ['FOCUS', 'Web Platforms, Mobile Apps & Applied AI'],
+    ['FOCUS', 'Web Platforms, Mobile Apps & Systems'],
     ['STANDARD', 'ISO/IEC 25010 Rated 4.51 / 5.00'],
   ];
   const left = rows.map(([k, v], i) => {
@@ -958,7 +958,7 @@ await writeIfChanged('header.svg', await header());
 const sections = [
   ['ABOUT', 'Profile & Active Projects'],
   ['TECH STACK', 'Languages, Frameworks & Tools'],
-  ['PROJECTS', 'Web, Mobile & AI Systems'],
+  ['PROJECTS', 'Web & Mobile Systems'],
   ['SECURITY & QA', 'Network Hardening & Standards'],
   ['ACTIVITY', 'Contributions & Languages'],
   ['CONTACT', 'Direct Links & Socials'],

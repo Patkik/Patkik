@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./assets/header.svg" width="100%" alt="Patrick Josh Añedez - Full-Stack Developer, Systems and AI Engineer" />
+<img src="./assets/header.svg" width="100%" alt="Patrick Josh Añedez - Full-Stack Developer and Systems Engineer" />
 
 </div>
 
