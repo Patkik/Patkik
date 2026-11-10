@@ -1,16 +1,6 @@
 #!/usr/bin/env node
 /**
- * Akatsuki Theme - Professional Engineering Portfolio Generator for github.com/Patkik
- *
- * Renders every SVG used by README.md into ./assets:
- *   header (Itachi base artwork + Akatsuki cloud pattern), section titles,
- *   dossier, arsenal, project cards, archive repositories, security audit,
- *   comms badges, footer (static design) and telemetry + snake frame (live data).
- *
- * Usage:  node scripts/generate.mjs
- * Env:    METRICS_TOKEN or GITHUB_TOKEN (optional, enables GraphQL calendar)
- *         PROFILE_USER (default: Patkik)
- *         SNAKE_SVG    (default: dist/snake.svg, produced by Platane/snk)
+ * Akatsuki Theme - Profile Asset Generator for github.com/Patkik
  */
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -66,7 +56,6 @@ const tw = (s, size, mono = false, ls = 0) => String(s).length * size * (mono ? 
 const fmt = (n) => Number(n).toLocaleString('en-US');
 const r1 = (n) => Math.round(n * 10) / 10;
 
-/** Angled octagonal HUD frame */
 const cutBox = (x, y, w, h, c = 16) =>
   `M${x + c} ${y}H${x + w - c * 0.45}L${x + w} ${y + c * 0.45}V${y + h - c}L${x + w - c} ${y + h}H${x + c * 0.45}L${x} ${y + h - c * 0.45}V${y + c}Z`;
 
@@ -83,20 +72,21 @@ const GLOW = `<filter id="p-glow" x="-50%" y="-50%" width="200%" height="200%"><
 const cloudAt = (x, y, s = 0.28, { outline = C.white, fill = C.blood, opacity = 1, extra = '' } = {}) =>
   `<g transform="translate(${r1(x)} ${r1(y)}) scale(${s})" opacity="${opacity}" ${extra}><path d="${CLOUD_OUTER}" fill="${outline}"/><path d="${CLOUD_INNER}" fill="${fill}"/></g>`;
 
-/** Renders a crimson geometric node indicator at (cx, cy) */
-const nodeRingAt = (cx, cy, r = 9, dur = '10s') => `
-  <g transform="translate(${r1(cx)} ${r1(cy)})">
-    <circle r="${r}" fill="${C.darkBlood}" stroke="${C.scarlet}" stroke-width="1.2"/>
-    <circle r="${r1(r * 0.62)}" fill="none" stroke="${C.white}" stroke-width="0.9" stroke-opacity=".55" stroke-dasharray="4 3">
-      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="${dur}" repeatCount="indefinite"/>
-    </circle>
-    <circle r="${r1(r * 0.26)}" fill="${C.scarlet}" filter="url(#p-glow)">
-      <animate attributeName="opacity" values="1;.35;1" dur="2.2s" repeatCount="indefinite"/>
-    </circle>
-  </g>`;
+/**
+ * 4-pointed Shuriken SVG separator / emblem centered at (cx, cy).
+ * Used in place of slashes or generic text separators.
+ */
+const shurikenAt = (cx, cy, r = 7.5, { color = C.scarlet, edge = C.white, spin = false, dur = '9s', opacity = 1 } = {}) => {
+  const k = r1(r * 0.28);
+  const h = r1(r * 0.24);
+  const star = `M0 ${-r}L${k} ${-k}L${r} 0L${k} ${k}L0 ${r}L${-k} ${k}L${-r} 0L${-k} ${-k}Z`;
+  const bevel = `M0 ${-r}L${k} ${-k}L0 0ZM${r} 0L${k} ${k}L0 0ZM0 ${r}L${-k} ${k}L0 0ZM${-r} 0L${-k} ${-k}L0 0Z`;
+  const anim = spin ? `<animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="${dur}" repeatCount="indefinite"/>` : '';
+  return `<g transform="translate(${r1(cx)} ${r1(cy)})" opacity="${opacity}"><g>${anim}<path d="${star}" fill="${color}" stroke="${edge}" stroke-width="0.85" stroke-linejoin="bevel"/><path d="${bevel}" fill="${edge}" fill-opacity=".35"/><circle r="${h}" fill="${C.void}" stroke="${edge}" stroke-width="0.9"/></g></g>`;
+};
 
-/** Shared Akatsuki HUD Frame with repeating Akatsuki Cloud Pattern */
-function panel(w, h, { label = '', meta = '', c = 20, cloudOpacity = 0.075 } = {}) {
+/** Shared Akatsuki Frame with repeating Akatsuki Cloud Pattern */
+function panel(w, h, { label = '', c = 20, cloudOpacity = 0.075 } = {}) {
   const shape = cutBox(1, 1, w - 2, h - 2, c);
   const tabW = label ? Math.round(tw(label, 11, true, 2.4)) + 68 : 0;
   const a = c + 14;
@@ -147,10 +137,7 @@ function panel(w, h, { label = '', meta = '', c = 20, cloudOpacity = 0.075 } = {
         ${cloudAt(a + 18, 6.5, 0.22, { opacity: 0.95 })}
         ${mono(a + 48, 19.5, label, { fill: C.white, anchor: 'start', ls: 2.3, weight: 700 })}
       ` : ''}
-      ${meta ? `
-        ${cloudAt(w - 48 - tw(meta, 11, true, 2) - 34, 6.5, 0.2, { opacity: 0.85 })}
-        ${mono(w - 48, 19.5, meta, { anchor: 'end', fill: C.soft })}
-      ` : ''}`,
+      ${shurikenAt(w - 28, 16, 6.5, { spin: true, dur: '12s', opacity: 0.85 })}`,
   };
 }
 
@@ -191,8 +178,8 @@ const iconAt = (d, x, y, size, fill, opacity = 1) =>
 /* ================================================================ HEADER */
 
 async function header() {
-  const W = 1200, H = 430;
-  const p = panel(W, H, { label: 'PROFILE.SYS // EXECUTIVE PORTFOLIO', meta: 'NODE PATKIK  //  8.15N 125.13E', c: 24, cloudOpacity: 0.11 });
+  const W = 1200, H = 420;
+  const p = panel(W, H, { label: 'PORTFOLIO', c: 24, cloudOpacity: 0.11 });
 
   let itachiDataUri = '';
   try {
@@ -203,26 +190,23 @@ async function header() {
   }
 
   const chips = [
-    '4TH-YR BSIT · BUKIDNON STATE UNIV',
-    'MALAYBALAY CITY, BUKIDNON, PH',
-    'FULL-STACK & AI SYSTEMS ARCHITECT',
+    'BSIT · Bukidnon State University',
+    'Malaybalay City, PH',
   ];
   let chipX = 68;
   const chipSvg = chips.map((c) => {
-    const w = tw(c, 10.5, true, 1.4) + 46;
+    const w = tw(c, 11, true, 1.2) + 44;
     const s = `
-      <path d="${cutBox(chipX, 342, w, 30, 7)}" fill="${C.darkBlood}" fill-opacity=".65" stroke="${C.scarlet}" stroke-opacity=".75"/>
-      ${cloudAt(chipX + 10, 349, 0.2, { opacity: 0.95 })}
-      ${mono(chipX + 36, 361, c, { fill: C.white, size: 10.5, ls: 1.4 })}`;
-    chipX += w + 10;
+      <path d="${cutBox(chipX, 334, w, 30, 7)}" fill="${C.darkBlood}" fill-opacity=".65" stroke="${C.scarlet}" stroke-opacity=".75"/>
+      ${shurikenAt(chipX + 18, 349, 5.5)}
+      ${mono(chipX + 32, 353, c, { fill: C.white, size: 11, ls: 1.2 })}`;
+    chipX += w + 12;
     return s;
   }).join('');
 
-  // Floating crimson particles
   const embers = [
     [540, 380, 2.5, '5.5s', '0s'], [640, 400, 3.2, '6.8s', '1.2s'], [760, 390, 2.2, '4.9s', '2.1s'],
     [880, 410, 3.5, '6.2s', '0.7s'], [1020, 395, 2.8, '5.1s', '1.8s'], [1120, 385, 2.0, '7.0s', '0.4s'],
-    [480, 395, 2.4, '6.0s', '2.8s'], [950, 405, 3.0, '5.4s', '3.1s'],
   ].map(([x, y, r, dur, begin], idx) => `
     <circle cx="${x}" cy="${y}" r="${r}" fill="${idx % 2 ? C.scarlet : C.white}" filter="url(#p-glow)">
       <animate attributeName="cy" values="${y};30" dur="${dur}" begin="${begin}" repeatCount="indefinite"/>
@@ -241,19 +225,17 @@ async function header() {
     </g>`).join('');
 
   const seals = [
-    { x: 642, y: 108, l: 'RUST / AXUM' },
-    { x: 612, y: 172, l: 'TYPESCRIPT / NEXT' },
-    { x: 582, y: 236, l: 'CHROMADB / AI' },
-    { x: 552, y: 300, l: 'DOCKER / CISCO' },
+    { x: 642, y: 104, l: 'RUST' },
+    { x: 614, y: 168, l: 'TYPESCRIPT' },
+    { x: 586, y: 232, l: 'REACT & NEXT' },
+    { x: 558, y: 296, l: 'DOCKER & AI' },
   ].map(({ x, y, l }, i) => {
-    const bw = tw(l, 9.5, true, 1.5) + 24;
+    const bw = tw(l, 9.5, true, 1.5) + 30;
     return `
       <g>
-        <path d="${cutBox(x, y, bw, 22, 5)}" fill="${C.void}" fill-opacity=".82" stroke="${C.scarlet}" stroke-opacity=".75"/>
-        <circle cx="${x + 9}" cy="${y + 11}" r="2.5" fill="${C.scarlet}">
-          <animate attributeName="opacity" values="1;.25;1" dur="2s" begin="${i * 0.4}s" repeatCount="indefinite"/>
-        </circle>
-        ${mono(x + 17, y + 14.5, l, { size: 9, fill: C.white, ls: 1.4 })}
+        <path d="${cutBox(x, y, bw, 24, 5)}" fill="${C.void}" fill-opacity=".85" stroke="${C.scarlet}" stroke-opacity=".75"/>
+        ${shurikenAt(x + 12, y + 12, 4.8, { spin: true, dur: `${6 + i * 2}s` })}
+        ${mono(x + 23, y + 15.5, l, { size: 9, fill: C.white, ls: 1.4 })}
       </g>`;
   }).join('');
 
@@ -305,14 +287,12 @@ async function header() {
   ${p.back}
   <g clip-path="url(#p-clip)">
     <rect width="${W}" height="${H}" fill="url(#h-crimson-aura)"/>
-
     ${itachiDataUri ? `<image href="${itachiDataUri}" x="360" y="-24" width="850" height="476" preserveAspectRatio="xMidYMid slice" mask="url(#h-itachi-mask)"/>` : ''}
-
     <rect width="${W}" height="${H}" fill="url(#h-left-cloak)"/>
     <rect width="680" height="${H}" fill="url(#ak-clouds)" opacity=".95"/>
 
     <g opacity=".16">
-      ${cloudAt(48, 250, 1.35)}
+      ${cloudAt(48, 240, 1.35)}
       <animateTransform attributeName="transform" type="translate" values="0 0;18 -6;0 0" dur="9s" repeatCount="indefinite"/>
     </g>
     <g opacity=".22">
@@ -320,11 +300,11 @@ async function header() {
       <animateTransform attributeName="transform" type="translate" values="0 0;-16 8;0 0" dur="11s" repeatCount="indefinite"/>
     </g>
     <g>
-      ${cloudAt(1055, 336, 1.05, { opacity: 0.92 })}
+      ${cloudAt(1055, 326, 1.05, { opacity: 0.92 })}
     </g>
 
-    <line x1="695" y1="30" x2="545" y2="400" stroke="url(#h-slash)" stroke-width="2.2" filter="url(#p-glow)"/>
-    <line x1="703" y1="30" x2="553" y2="400" stroke="${C.scarlet}" stroke-opacity=".35" stroke-width="1" stroke-dasharray="6 4"/>
+    <line x1="695" y1="30" x2="545" y2="390" stroke="url(#h-slash)" stroke-width="2.2" filter="url(#p-glow)"/>
+    <line x1="703" y1="30" x2="553" y2="390" stroke="${C.scarlet}" stroke-opacity=".35" stroke-width="1" stroke-dasharray="6 4"/>
 
     ${crows}
     ${embers}
@@ -333,22 +313,23 @@ async function header() {
     <rect x="0" y="${H - 5}" width="${W}" height="4" fill="${C.scarlet}" opacity=".75"/>
   </g>
 
-  <!-- System Status Header -->
-  ${nodeRingAt(78, 62, 8, '9s')}
-  ${mono(96, 66, 'SYSTEMS ONLINE', { fill: C.scarlet, size: 10.5, weight: 700, ls: 2.2 })}
-  ${mono(234, 66, '//  PORTFOLIO ARCHITECTURE v26.11', { size: 10.5, fill: C.soft, ls: 1.8 })}
-
-  <!-- Identity Display -->
-  <g transform="translate(68 92)">
-    ${cloudAt(0, 0, 0.28, { opacity: 0.95 })}
-    ${mono(38, 16, 'SOFTWARE ENGINEER  //  FULL-STACK & SYSTEMS ARCHITECT', { fill: C.scarlet, ls: 3, size: 11, weight: 700 })}
+  <!-- Role Tag with Shuriken Separators -->
+  <g transform="translate(68 82)">
+    ${shurikenAt(8, 10, 6.5, { spin: true })}
+    ${mono(26, 14, 'SOFTWARE ENGINEER', { fill: C.scarlet, ls: 2.8, size: 11, weight: 700 })}
+    ${shurikenAt(210, 10, 5.5)}
+    ${mono(228, 14, 'SYSTEMS ARCHITECT', { fill: C.soft, ls: 2.5, size: 11, weight: 600 })}
   </g>
 
-  ${text(66, 184, 'PATRICK JOSH', { size: 68, weight: 900, fill: 'url(#h-name)', ls: 3 })}
-  <text x="68" y="258" font-family="${SANS}" font-size="68" font-weight="900" letter-spacing="11" fill="url(#h-fill)" stroke="${C.white}" stroke-width="2">AÑEDEZ</text>
-  <text x="68" y="258" font-family="${SANS}" font-size="68" font-weight="900" letter-spacing="11" fill="none" stroke="url(#h-shine)" stroke-width="2.6" filter="url(#p-glow)">AÑEDEZ</text>
+  ${text(66, 174, 'PATRICK JOSH', { size: 68, weight: 900, fill: 'url(#h-name)', ls: 3 })}
+  <text x="68" y="248" font-family="${SANS}" font-size="68" font-weight="900" letter-spacing="11" fill="url(#h-fill)" stroke="${C.white}" stroke-width="2">AÑEDEZ</text>
+  <text x="68" y="248" font-family="${SANS}" font-size="68" font-weight="900" letter-spacing="11" fill="none" stroke="url(#h-shine)" stroke-width="2.6" filter="url(#p-glow)">AÑEDEZ</text>
 
-  ${text(70, 308, 'Full-Stack Developer  ·  Systems & AI Engineer', { size: 21, fill: C.text, weight: 600, ls: 0.6 })}
+  <!-- Subtitle with Shuriken separators -->
+  ${text(70, 298, 'Full-Stack Developer', { size: 20, fill: C.text, weight: 600, ls: 0.4 })}
+  ${shurikenAt(278, 291, 6)}
+  ${text(296, 298, 'Systems & AI Engineer', { size: 20, fill: C.soft, weight: 500, ls: 0.4 })}
+
   ${chipSvg}
   ${p.front}`;
   return doc(W, H, 'Patrick Josh Añedez - Full-Stack Developer, Systems & AI Engineer', body);
@@ -356,16 +337,17 @@ async function header() {
 
 /* ======================================================= SECTION TITLES */
 
-function section(idx, title, sub, total = 6) {
-  const W = 1200, H = 94;
+function section(idx, title, sub) {
+  const W = 1200, H = 90;
   const n = String(idx).padStart(2, '0');
-  const tW = tw(title, 25, false, 4) + 12;
-  const lineStart = Math.max(150 + tW + 24, 150 + tw(sub, 11.5, true, 1.2) + 24);
-  const lineEnd = 1068;
+  const tW = tw(title, 25, false, 3.5) + 12;
+  const subX = 148 + tW + 28;
+  const lineStart = subX + tw(sub, 12, true, 1.4) + 28;
+  const lineEnd = 1140;
 
   const cloudMarks = [];
-  for (let x = lineStart + 30; x <= lineEnd - 60; x += 110) {
-    cloudMarks.push(cloudAt(x, 31, 0.24, { opacity: 0.78 }));
+  for (let x = lineStart + 36; x <= lineEnd - 70; x += 120) {
+    cloudMarks.push(cloudAt(x, 29, 0.23, { opacity: 0.78 }));
   }
 
   const body = `
@@ -376,18 +358,18 @@ function section(idx, title, sub, total = 6) {
       <stop offset="1" stop-color="${C.crimson}" stop-opacity=".1"/>
     </linearGradient>
   </defs>
-  <path d="${cutBox(2, 15, 76, 64, 12)}" fill="${C.darkBlood}" fill-opacity=".85" stroke="${C.scarlet}" stroke-width="1.5"/>
-  <path d="${cutBox(6, 19, 68, 56, 9)}" fill="none" stroke="${C.white}" stroke-opacity=".35"/>
-  <line x1="8" y1="47" x2="70" y2="47" stroke="${C.scarlet}" stroke-opacity=".35" stroke-width="2"/>
-  ${text(40, 56, n, { font: MONO, size: 26, weight: 800, fill: C.white, anchor: 'middle', extra: 'filter="url(#p-glow)"' })}
+  <path d="${cutBox(2, 13, 72, 62, 12)}" fill="${C.darkBlood}" fill-opacity=".85" stroke="${C.scarlet}" stroke-width="1.5"/>
+  <path d="${cutBox(6, 17, 64, 54, 9)}" fill="none" stroke="${C.white}" stroke-opacity=".35"/>
+  ${text(38, 53, n, { font: MONO, size: 25, weight: 800, fill: C.white, anchor: 'middle', extra: 'filter="url(#p-glow)"' })}
 
-  ${cloudAt(92, 24, 0.44, { opacity: 0.96 })}
+  ${cloudAt(88, 22, 0.44, { opacity: 0.96 })}
 
-  ${text(148, 50, title, { size: 25, weight: 800, ls: 4, fill: C.white })}
-  ${mono(149, 73, sub, { size: 11.5, ls: 1.2, fill: C.soft })}
+  ${text(146, 52, title, { size: 25, weight: 800, ls: 3.5, fill: C.white })}
+  ${shurikenAt(146 + tW + 6, 44, 6.5, { spin: true, dur: '10s' })}
+  ${mono(subX, 48, sub, { size: 11.5, ls: 1.4, fill: C.soft })}
 
   <line x1="${r1(lineStart)}" y1="42" x2="${lineEnd}" y2="42" stroke="url(#s-blade)" stroke-width="2"/>
-  <line x1="${r1(lineStart)}" y1="48" x2="${lineEnd - 40}" y2="48" stroke="${C.lineBright}" stroke-width="1" stroke-dasharray="8 6"/>
+  <line x1="${r1(lineStart)}" y1="48" x2="${lineEnd - 30}" y2="48" stroke="${C.lineBright}" stroke-width="1" stroke-dasharray="8 6"/>
   ${cloudMarks.join('')}
 
   <rect y="40" width="54" height="4" rx="2" fill="${C.scarlet}" filter="url(#p-glow)">
@@ -395,32 +377,31 @@ function section(idx, title, sub, total = 6) {
     <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.1;.85;1" dur="3.2s" repeatCount="indefinite"/>
   </rect>
 
-  ${nodeRingAt(lineEnd + 16, 44, 7, '12s')}
-  ${mono(1196, 48, `SEC.${n} / ${String(total).padStart(2, '0')}`, { anchor: 'end', fill: C.muted, size: 10.5, ls: 1.5 })}`;
+  ${shurikenAt(1172, 44, 9, { spin: true, dur: '8s' })}`;
   return doc(W, H, `${n} ${title}`, body);
 }
 
 /* ============================================================== DOSSIER */
 
 function dossier() {
-  const W = 1200, H = 490;
-  const p = panel(W, H, { label: 'ENGINEER DOSSIER // TECHNICAL PORTFOLIO', meta: 'VERIFIED CREDENTIALS // ISO/IEC 25010', cloudOpacity: 0.08 });
+  const W = 1200, H = 430;
+  const p = panel(W, H, { label: 'ABOUT', cloudOpacity: 0.08 });
   const rows = [
-    ['ENGINEER', 'Patrick Josh S. Añedez'],
-    ['HANDLE', 'DracoNox  /  @Patkik'],
-    ['ROLE', 'Full-Stack Developer & Systems Architect'],
-    ['INSTITUTION', 'Bukidnon State University (4th-Year BSIT)'],
-    ['LOCATION', 'Malaybalay City, Bukidnon, Philippines'],
-    ['LEADERSHIP', 'Lead Architect (CMS-V2)  /  Lead Dev (COMSOC)'],
-    ['ENGINEERING', 'Async Microservices, RFID Telemetry, Hardening'],
-    ['EVALUATION', 'ISO/IEC 25010 4.51/5.00 ("Excellent")  /  140 QA Cases'],
+    ['NAME', 'Patrick Josh S. Añedez'],
+    ['HANDLE', '@Patkik'],
+    ['ROLE', 'Full-Stack & Systems Developer'],
+    ['EDUCATION', 'BSIT · Bukidnon State University'],
+    ['LOCATION', 'Malaybalay City, Philippines'],
+    ['LEADERSHIP', 'Lead Architect (CMS-V2) · Lead Dev (COMSOC)'],
+    ['FOCUS', 'Web Platforms, Mobile Apps & Applied AI'],
+    ['STANDARD', 'ISO/IEC 25010 Rated 4.51 / 5.00'],
   ];
   const left = rows.map(([k, v], i) => {
-    const y = 98 + i * 40;
+    const y = 94 + i * 40;
     return `
-      <rect x="48" y="${y - 11}" width="3" height="14" fill="${i === 0 ? C.scarlet : C.blood}"/>
-      ${mono(60, y, k, { size: 10.5, fill: i === 0 ? C.scarlet : C.muted, weight: 700 })}
-      <line x1="${60 + tw(k, 10.5, true, 2) + 8}" y1="${y - 4}" x2="206" y2="${y - 4}" stroke="${C.lineBright}" stroke-dasharray="2 3"/>
+      ${shurikenAt(52, y - 5, 4.8, { opacity: i === 0 ? 1 : 0.7 })}
+      ${mono(66, y, k, { size: 10.5, fill: i === 0 ? C.scarlet : C.muted, weight: 700 })}
+      <line x1="${66 + tw(k, 10.5, true, 2) + 8}" y1="${y - 4}" x2="206" y2="${y - 4}" stroke="${C.lineBright}" stroke-dasharray="2 3"/>
       ${text(220, y + 1, v, { size: 16, fill: i === 0 ? C.white : C.soft, weight: i === 0 ? 700 : 400 })}`;
   }).join('');
 
@@ -430,77 +411,69 @@ function dossier() {
     PIPELINE:   { bg: '#27120B', border: C.ember, text: C.ember },
   };
   const ops = [
-    ['FLAGSHIP',   'BukSU CMS-V2 (Project Workspace)', 'CHROMA VECTOR SIMILARITY / 4-TIER RBAC / DOCKER'],
-    ['FLAGSHIP',   'RacePulsePH Event Timing', 'REAL-TIME RFID BIB & FINISH-LINE SENSOR SUITE'],
-    ['PRODUCTION', 'COMSOC Mentoring Info System', 'PEER-TUTORING & PROGRAMMING MENTORSHIP MATCHING'],
-    ['PRODUCTION', 'MedPulsePH Health Platform', 'VITAL TELEMETRY & CLINICAL ACCESS / RUST & POSTGRES'],
-    ['PIPELINE',   'AudiobookTTSGenerator', 'NEURAL TTS CHUNKING & BOUNDARY NORMALIZATION'],
-    ['PRODUCTION', 'WSB Dance Championship App', 'REAL-TIME BRACKET TRACKING & LIVE JUDGING SCORES'],
+    ['FLAGSHIP',   'BukSU CMS-V2', 'Capstone Management & Vector Plagiarism Engine'],
+    ['FLAGSHIP',   'RacePulsePH', 'RFID Athletic Timing & Mobile Leaderboards'],
+    ['PRODUCTION', 'COMSOC Mentoring System', 'Peer-Tutoring & Session Scheduling Platform'],
+    ['PRODUCTION', 'MedPulsePH', 'NFC Digital Healthcare & Clinical Records'],
+    ['PIPELINE',   'AudiobookTTSGenerator', 'Neural Text-to-Speech Synthesis Pipeline'],
+    ['PRODUCTION', 'World Supremacy Battlegrounds', 'Live Championship Scoring & Bracket System'],
   ];
   const right = ops.map(([s, name, sub], i) => {
-    const y = 124 + i * 50;
+    const y = 118 + i * 50;
     const st = status[s];
     return `
-      <path d="${cutBox(666, y - 16, 114, 24, 6)}" fill="${st.bg}" stroke="${st.border}" stroke-opacity=".85"/>
-      ${cloudAt(674, y - 11, 0.16, { opacity: 0.95 })}
-      ${mono(734, y, s, { anchor: 'middle', size: 9, fill: st.text, ls: 1.2, weight: 700 })}
-      ${text(792, y + 1, name, { size: 16, weight: 700, fill: C.white })}
-      ${mono(792, y + 20, sub, { size: 9.5, fill: C.muted, ls: 1.1 })}`;
+      <path d="${cutBox(666, y - 16, 110, 24, 6)}" fill="${st.bg}" stroke="${st.border}" stroke-opacity=".85"/>
+      ${shurikenAt(680, y - 4, 4.5)}
+      ${mono(730, y, s, { anchor: 'middle', size: 9, fill: st.text, ls: 1.2, weight: 700 })}
+      ${text(790, y + 1, name, { size: 16, weight: 700, fill: C.white })}
+      ${text(790, y + 20, sub, { size: 12.5, fill: C.muted })}`;
   }).join('');
 
-  const prompt = 'patkik@workstation:~$ cargo run --release --bin portfolio-audit';
   const body = `
   <defs>${p.defs}</defs>
   ${p.back}
   <g clip-path="url(#p-clip)">
-    <rect x="636" y="56" width="1.5" height="346" fill="${C.lineBright}"/>
+    <rect x="636" y="56" width="1.5" height="336" fill="${C.lineBright}"/>
     <rect x="635.5" y="56" width="2.5" height="64" fill="${C.scarlet}" filter="url(#p-glow)">
-      <animate attributeName="y" values="56;338;56" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="y" values="56;328;56" dur="6s" repeatCount="indefinite"/>
     </rect>
-    ${cloudAt(592, 340, 0.75, { opacity: 0.12 })}
+    ${shurikenAt(636.5, 224, 9, { spin: true, dur: '10s' })}
   </g>
   ${left}
-  ${cloudAt(666, 68, 0.24, { opacity: 0.95 })}
-  ${mono(698, 82, 'FEATURED CAMPUS & ENTERPRISE SYSTEMS', { fill: C.scarlet, ls: 2.5, weight: 700 })}
+  ${shurikenAt(674, 74, 6)}
+  ${mono(690, 78, 'ACTIVE PROJECTS', { fill: C.scarlet, ls: 2.5, weight: 700 })}
   ${right}
-  <path d="${cutBox(40, 418, 1120, 46, 10)}" fill="${C.void}" stroke="${C.lineBright}"/>
-  ${nodeRingAt(64, 441, 7, '8s')}
-  ${mono(82, 445, prompt, { size: 13, fill: C.scarlet, ls: 0.5, weight: 600 })}
-  <rect x="${r1(82 + tw(prompt, 13, true, 0.5) + 8)}" y="432" width="9" height="16" fill="${C.white}">
-    <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;.5;.5;1" dur="1.1s" repeatCount="indefinite"/>
-  </rect>
-  ${mono(1138, 445, 'EXIT 0  //  ISO/IEC 25010 VERIFIED  //  QA 140/140 PASSED', { anchor: 'end', size: 10.5, fill: C.white, ls: 1.5 })}
   ${p.front}`;
-  return doc(W, H, 'Engineer dossier: Patrick Josh S. Añedez - Technical & Software Engineering Portfolio', body);
+  return doc(W, H, 'Profile: Patrick Josh S. Añedez', body);
 }
 
 /* ============================================================== ARSENAL */
 
 const ARSENAL = [
-  { cat: 'I. LANGUAGES & SYSTEMS', color: C.scarlet, items: [
+  { cat: 'LANGUAGES', color: C.scarlet, items: [
     ['Rs', 'Rust', 'rust'], ['Ts', 'TypeScript', 'typescript'], ['Js', 'JavaScript', 'javascript'], ['Py', 'Python', 'python'],
     ['Jv', 'Java', 'openjdk'], ['Kt', 'Kotlin', 'kotlin'], ['Cp', 'C++', 'cplusplus'], ['Ph', 'PHP', 'php'], ['Sq', 'SQL', 'postgresql']] },
-  { cat: 'II. INTERFACE & MOBILE', color: C.white, items: [
+  { cat: 'FRONTEND & MOBILE', color: C.white, items: [
     ['Re', 'React.js', 'react'], ['Rn', 'React Native', 'react'], ['Nx', 'Next.js', 'nextdotjs'], ['Jc', 'Compose', 'jetpackcompose'],
     ['Tw', 'Tailwind', 'tailwindcss'], ['Vt', 'Vite', 'vite'], ['Pw', 'PWA', 'pwa'], ['Po', 'PaddleOCR', 'opencv'], ['An', 'Android', 'android']] },
-  { cat: 'III. BACKEND, DATA & VECTORS', color: C.crimson, items: [
+  { cat: 'BACKEND & DATA', color: C.crimson, items: [
     ['Fa', 'FastAPI', 'fastapi'], ['Ex', 'Express 5', 'express'], ['Nd', 'Node.js', 'nodedotjs'], ['Mg', 'MongoDB', 'mongodb'],
-    ['Rd', 'Redis', 'redis'], ['Ch', 'ChromaDB', 'databricks'], ['S3', 'MinIO S3', 'minio'], ['Pg', 'PostgreSQL', 'postgresql'], ['Mq', 'BullMQ/Celery', 'celery']] },
-  { cat: 'IV. DEVOPS, SECURITY & AI', color: C.rose, items: [
-    ['Dk', 'Docker', 'docker'], ['Ci', 'Cisco L2/L3', 'cisco'], ['Rf', 'RFID/Sensors', 'nfc'], ['Ga', 'GH Actions', 'githubactions'],
-    ['Aw', 'AWS', 'amazon'], ['Lx', 'Linux Admin', 'linux'], ['Ax', 'Axum/Tokio', 'rust'], ['Cu', 'Cursor Pro', 'cursor'], ['Cl', 'Claude Code', 'anthropic']] },
+    ['Rd', 'Redis', 'redis'], ['Ch', 'ChromaDB', 'databricks'], ['S3', 'MinIO S3', 'minio'], ['Pg', 'PostgreSQL', 'postgresql'], ['Mq', 'BullMQ', 'celery']] },
+  { cat: 'DEVOPS & TOOLS', color: C.rose, items: [
+    ['Dk', 'Docker', 'docker'], ['Ci', 'Cisco L2/L3', 'cisco'], ['Rf', 'RFID / NFC', 'nfc'], ['Ga', 'GH Actions', 'githubactions'],
+    ['Aw', 'AWS', 'amazon'], ['Lx', 'Linux', 'linux'], ['Ax', 'Axum', 'rust'], ['Cu', 'Cursor', 'cursor'], ['Cl', 'Claude Code', 'anthropic']] },
 ];
 
 async function arsenal() {
   const W = 1200, H = 660;
-  const p = panel(W, H, { label: 'TECHNICAL ARSENAL // CORE STACK', meta: `${ARSENAL.reduce((a, c) => a + c.items.length, 0)} TECHNOLOGIES LOADED`, cloudOpacity: 0.08 });
+  const p = panel(W, H, { label: 'TECH STACK', cloudOpacity: 0.08 });
   const tileW = 116, tileH = 120, gap = 9, x0 = 64, y0 = 108;
   let legendX = 64;
   const legend = ARSENAL.map(({ cat, color }) => {
     const s = `
-      ${cloudAt(legendX, 58, 0.22, { fill: color === C.white ? C.blood : color, outline: C.white })}
-      ${mono(legendX + 28, 72, cat, { size: 10.5, fill: C.text, ls: 1.8, weight: 700 })}`;
-    legendX += tw(cat, 10.5, true, 1.8) + 56;
+      ${shurikenAt(legendX + 8, 67, 6, { color: color === C.white ? C.scarlet : color })}
+      ${mono(legendX + 24, 71, cat, { size: 11, fill: C.text, ls: 2, weight: 700 })}`;
+    legendX += tw(cat, 11, true, 2) + 64;
     return s;
   }).join('');
 
@@ -534,41 +507,40 @@ async function arsenal() {
     }
   }
   const body = `<defs>${p.defs}</defs>${p.back}${legend}${rows.join('')}${p.front}`;
-  return doc(W, H, 'Technical Arsenal: languages, interface, backend and systems tooling', body);
+  return doc(W, H, 'Tech Stack', body);
 }
 
 /* ========================================================= PROJECT CARDS */
 
 const PROJECTS = [
-  { slug: 'cms-v2', repo: 'CMS-V2', title: 'BukSU CMS-V2 (Project Workspace)', tag: 'FLAGSHIP // CAPSTONE & PLAGIARISM', lang: ['JavaScript', '#F1E05A'],
-    desc: 'Full-stack institutional capstone platform with async lexical winnowing + ChromaDB vector similarity across 22 audited algorithms, 4-tier RBAC, and Docker. Rated 4.51/5.00 ("Excellent") on ISO/IEC 25010 with 140 QA test cases.',
+  { slug: 'cms-v2', repo: 'CMS-V2', title: 'BukSU CMS-V2', tag: 'CAPSTONE & PLAGIARISM PLATFORM', lang: ['JavaScript', '#F1E05A'],
+    desc: 'Institutional capstone management platform with lexical winnowing and ChromaDB vector similarity across 22 algorithms, 4-tier RBAC, and Docker.',
     chips: ['React.js', 'Express 5', 'FastAPI', 'ChromaDB', 'Redis', 'Docker'] },
-  { slug: 'racepulse', repo: 'RacePulsePH', title: 'RacePulsePH', tag: 'FLAGSHIP // ATHLETIC EVENT TIMING', lang: ['TypeScript', '#3178C6'],
-    desc: 'Athletic timing and race management system. Calibrated RFID bib scanners and finish-line checkpoint antenna hardware with real-time web dashboards and React Native mobile leaderboards.',
+  { slug: 'racepulse', repo: 'RacePulsePH', title: 'RacePulsePH', tag: 'ATHLETIC EVENT TIMING', lang: ['TypeScript', '#3178C6'],
+    desc: 'Race timing and event management system integrating RFID bib scanners and finish-line checkpoints with live web dashboards and mobile leaderboards.',
     chips: ['React Native', 'React.js', 'RFID', 'REST APIs', 'Sensors'] },
-  { slug: 'comsoc', repo: 'Monitoring-Information-Systems', title: 'COMSOC Mentoring Info System', tag: 'PRODUCTION // BUKSU COMPUTER SOCIETY', lang: ['TypeScript', '#3178C6'],
-    desc: 'Automated peer-tutoring and programming mentorship matching system engineered as Lead Developer for BukSU Computer Society (COMSOC) with role-based session scheduling and conflict-free tracking.',
-    chips: ['TypeScript', 'MongoDB Atlas', 'Session Scheduling', 'RBAC'] },
-  { slug: 'medpulse', repo: 'MedPulsePH', title: 'MedPulsePH', tag: 'SPECIALIZED // DIGITAL HEALTHCARE', lang: ['Rust', '#DEA584'],
-    desc: 'Digital healthcare platform centered on NFC wristbands and patient-authorized clinical access, with split identity and clinical PostgreSQL vaults, Redis, and health telemetry APIs.',
+  { slug: 'comsoc', repo: 'Monitoring-Information-Systems', title: 'COMSOC Mentoring System', tag: 'CAMPUS MENTORSHIP PLATFORM', lang: ['TypeScript', '#3178C6'],
+    desc: 'Automated peer-tutoring and programming mentorship platform built for BukSU Computer Society with role-based scheduling and session tracking.',
+    chips: ['TypeScript', 'MongoDB Atlas', 'Scheduling', 'RBAC'] },
+  { slug: 'medpulse', repo: 'MedPulsePH', title: 'MedPulsePH', tag: 'DIGITAL HEALTHCARE', lang: ['Rust', '#DEA584'],
+    desc: 'Healthcare platform utilizing NFC wristbands for patient-authorized clinical access, backed by split PostgreSQL vaults, Redis, and Rust APIs.',
     chips: ['Rust API', 'React Native', 'PostgreSQL', 'Redis', 'NFC'] },
-  { slug: 'audiobook', repo: 'AudiobookTTSGenerator', title: 'AudiobookTTSGenerator', tag: 'PIPELINE // NEURAL TEXT-TO-SPEECH', lang: ['Python', '#3572A5'],
-    desc: 'Automated document-to-audiobook pipeline that extracts chapter text from manuscripts and ebooks, handles sentence chunking and boundary normalization, and batches high-fidelity neural audio.',
-    chips: ['Python', 'Neural TTS', 'Audio Processing', 'CLI / Batch'] },
-  { slug: 'wsb', repo: 'World-Supremacy-Battleground-app', title: 'World Supremacy Battlegrounds', tag: 'ENTERPRISE // EVENT SCORING & BRACKETS', lang: ['Rust', '#DEA584'],
-    desc: 'Competition platform engineered for the international street dance championship, supporting participant registration, competition bracket tracking, real-time judging, and live leaderboard scoring.',
+  { slug: 'audiobook', repo: 'AudiobookTTSGenerator', title: 'AudiobookTTSGenerator', tag: 'NEURAL TEXT-TO-SPEECH', lang: ['Python', '#3572A5'],
+    desc: 'Automated document-to-audiobook pipeline that extracts chapters, normalizes sentence boundaries, and synthesizes batched neural audio.',
+    chips: ['Python', 'Neural TTS', 'Audio Processing', 'CLI'] },
+  { slug: 'wsb', repo: 'World-Supremacy-Battleground-app', title: 'World Supremacy Battlegrounds', tag: 'EVENT SCORING & BRACKETS', lang: ['Rust', '#DEA584'],
+    desc: 'International street dance championship platform featuring participant registration, bracket tracking, real-time judging, and live leaderboards.',
     chips: ['Next.js', 'Rust Axum', 'Firebase', 'Real-Time DB', 'Docker'] },
 ];
 
 function projectCard(pj, i) {
-  const W = 600, H = 306;
-  const id = `SYS-${String(i + 1).padStart(2, '0')}`;
+  const W = 600, H = 290;
   const shape = cutBox(1, 1, W - 2, H - 2, 18);
-  const lines = wrap(pj.desc, 65).slice(0, 4);
+  const lines = wrap(pj.desc, 64).slice(0, 3);
   let cx = 32;
   const chips = pj.chips.map((c) => {
     const w = tw(c, 10.5, true, 1) + 22;
-    const s = `<path d="${cutBox(cx, 224, w, 26, 5)}" fill="${C.darkBlood}" fill-opacity=".6" stroke="${C.scarlet}" stroke-opacity=".65"/>${mono(cx + w / 2, 241, c, { anchor: 'middle', fill: C.white, size: 10.5, ls: 1 })}`;
+    const s = `<path d="${cutBox(cx, 208, w, 26, 5)}" fill="${C.darkBlood}" fill-opacity=".6" stroke="${C.scarlet}" stroke-opacity=".65"/>${mono(cx + w / 2, 225, c, { anchor: 'middle', fill: C.white, size: 10.5, ls: 1 })}`;
     cx += w + 8;
     return s;
   }).join('');
@@ -602,7 +574,6 @@ function projectCard(pj, i) {
   <path d="${shape}" fill="url(#c-clouds)"/>
   <g clip-path="url(#c-clip)">
     ${cloudAt(W - 175, H - 128, 1.55, { opacity: 0.14 })}
-    <text x="${W - 22}" y="${H - 38}" font-family="${MONO}" font-size="112" font-weight="800" fill="${C.scarlet}" fill-opacity=".045" text-anchor="end">${String(i + 1).padStart(2, '0')}</text>
     <rect x="0" y="0" width="${W}" height="3.5" fill="url(#c-top)"/>
     <rect x="-200" y="0" width="200" height="3.5" fill="${C.white}" filter="url(#p-glow)">
       <animate attributeName="x" values="-200;${W}" dur="4.2s" begin="${i * 0.6}s" repeatCount="indefinite"/>
@@ -612,69 +583,69 @@ function projectCard(pj, i) {
   <path d="M1 19L19 1" stroke="${C.scarlet}" stroke-width="2.6" filter="url(#p-glow)"/>
   <path d="M${W - 26} 1H${W - 9}L${W - 1} 9V26" fill="none" stroke="${C.white}" stroke-opacity=".8" stroke-width="1.6"/>
 
-  ${cloudAt(30, 30, 0.23, { opacity: 0.95 })}
-  ${mono(60, 45, `${id}  //  ${pj.tag}`, { fill: C.scarlet, ls: 1.8, weight: 700 })}
-  <circle cx="${W - 32 - tw(pj.lang[0], 11, true, 1) - 12}" cy="41" r="5" fill="${pj.lang[1]}"/>
-  ${mono(W - 32, 45, pj.lang[0], { anchor: 'end', fill: C.white, ls: 1 })}
+  ${shurikenAt(38, 40, 6)}
+  ${mono(54, 44, pj.tag, { fill: C.scarlet, ls: 1.8, weight: 700 })}
+  <circle cx="${W - 32 - tw(pj.lang[0], 11, true, 1) - 12}" cy="40" r="5" fill="${pj.lang[1]}"/>
+  ${mono(W - 32, 44, pj.lang[0], { anchor: 'end', fill: C.white, ls: 1 })}
 
-  ${text(32, 88, pj.title, { size: 26, weight: 800, fill: C.white, ls: 0.3 })}
-  ${lines.map((l, k) => text(32, 124 + k * 23, l, { size: 15, fill: C.soft })).join('')}
+  ${text(32, 86, pj.title, { size: 26, weight: 800, fill: C.white, ls: 0.3 })}
+  ${lines.map((l, k) => text(32, 122 + k * 24, l, { size: 15, fill: C.soft })).join('')}
   ${chips}
 
-  <line x1="32" y1="268" x2="${W - 32}" y2="268" stroke="${C.lineBright}"/>
-  ${mono(32, 288, `github.com/${USER}/${pj.repo}`.slice(0, 52), { size: 10, fill: C.muted, ls: 0.8 })}
-  ${mono(W - 50, 288, 'VIEW REPOSITORY', { anchor: 'end', size: 10.5, fill: C.scarlet, ls: 2, weight: 700 })}
-  <path d="M${W - 42} 280l6 4.5-6 4.5" fill="none" stroke="${C.white}" stroke-width="1.6"/>`;
+  <line x1="32" y1="252" x2="${W - 32}" y2="252" stroke="${C.lineBright}"/>
+  ${mono(32, 272, pj.repo, { size: 10.5, fill: C.muted, ls: 1 })}
+  ${shurikenAt(W - 140, 268, 5)}
+  ${mono(W - 32, 272, 'VIEW REPO', { anchor: 'end', size: 10.5, fill: C.scarlet, ls: 2, weight: 700 })}`;
   return doc(W, H, `${pj.title} - ${pj.desc}`, body);
 }
 
 function archiveScrolls() {
-  const W = 1200, H = 256;
-  const p = panel(W, H, { label: 'ADDITIONAL REPOSITORIES // SPECIALIZED SYSTEMS & TOOLING', meta: 'VERIFIED REPOSITORIES', cloudOpacity: 0.08 });
+  const W = 1200, H = 250;
+  const p = panel(W, H, { label: 'MORE PROJECTS', cloudOpacity: 0.08 });
   const items = [
-    ['Kipit', 'KOTLIN / COMPOSE', 'Native Android offline-first budget tracker with Room persistence & Hilt DI.'],
-    ['Spirits of the Vale', 'JAVA / 2D ENGINE', 'Top-down RPG engine with custom state-machine NPC behaviors & collision physics.'],
-    ['Multi-Tenant SaaS Catering V2', 'FULL-STACK SAAS', 'Tenant-isolated catering architecture backed by 51 automated unit test specs.'],
-    ['Orchestrator Agentic System', 'AI ORCHESTRATION', 'Autonomous multi-step agent task runner with durable state checkpoints.'],
-    ['Vortex Studio A.I', 'APPLIED AI MEDIA', 'High-throughput generative media pipeline & automated processing workflows.'],
-    ['Barcelon Store', 'ANDROID / MOBILE', 'Real-time mobile store inventory & transaction tracking infrastructure.'],
+    ['Kipit', 'KOTLIN', 'Offline-first Android budget tracker with Compose, Room & Hilt.'],
+    ['Spirits of the Vale', 'JAVA', '2D RPG engine with state-machine NPCs and collision physics.'],
+    ['Multi-Tenant SaaS Catering V2', 'SAAS', 'Tenant-isolated catering platform with 51 automated test specs.'],
+    ['Orchestrator', 'AI AGENTS', 'Autonomous multi-step task runner with durable state checkpoints.'],
+    ['Vortex Studio A.I', 'MEDIA AI', 'High-throughput generative media & automated processing pipeline.'],
+    ['Barcelon Store', 'ANDROID', 'Mobile store inventory and real-time transaction tracking app.'],
   ];
-  const colW = 548, rowH = 52, x0 = 40, y0 = 62;
+  const colW = 548, rowH = 52, x0 = 40, y0 = 60;
   const cards = items.map(([name, tag, desc], idx) => {
     const col = idx % 2, row = Math.floor(idx / 2);
     const x = x0 + col * (colW + 24), y = y0 + row * (rowH + 10);
     return `<g transform="translate(${x} ${y})">
       <path d="${cutBox(0, 0, colW, rowH, 8)}" fill="${C.panel2}" fill-opacity=".92" stroke="${C.lineBright}"/>
       <rect x="0" y="10" width="3" height="${rowH - 20}" fill="${C.scarlet}"/>
-      ${cloudAt(14, 10, 0.18, { opacity: 0.95 })}
-      ${text(40, 23, name, { size: 15, weight: 700, fill: C.white })}
-      ${mono(colW - 14, 22, tag, { anchor: 'end', size: 9, fill: C.scarlet, ls: 1.4, weight: 700 })}
-      ${text(16, 42, desc, { size: 12, fill: C.soft })}
+      ${shurikenAt(20, 19, 5)}
+      ${text(34, 23, name, { size: 15, weight: 700, fill: C.white })}
+      ${mono(colW - 14, 22, tag, { anchor: 'end', size: 9.5, fill: C.scarlet, ls: 1.4, weight: 700 })}
+      ${text(16, 42, desc, { size: 12.5, fill: C.soft })}
     </g>`;
   }).join('');
-  return doc(W, H, 'Additional Specialized Repositories and Open-Source Tooling', `<defs>${p.defs}</defs>${p.back}${cards}${p.front}`);
+  return doc(W, H, 'More Projects', `<defs>${p.defs}</defs>${p.back}${cards}${p.front}`);
 }
 
 /* ======================================================= SECURITY & QA */
 
 function securityAudit() {
-  const W = 1200, H = 258;
-  const p = panel(W, H, { label: 'STANDARDS // INFRASTRUCTURE HARDENING & QA', meta: 'VERIFIED ENGINEERING CONTROLS', cloudOpacity: 0.08 });
-  const colW = 356, h = 156, y = 64;
+  const W = 1200, H = 250;
+  const p = panel(W, H, { label: 'SECURITY & QUALITY', cloudOpacity: 0.08 });
+  const colW = 356, h = 152, y = 62;
   const cols = [
     {
-      tag: 'QA & EVALUATION', title: 'ISO/IEC 25010', score: '4.51 / 5.00', stat: '"EXCELLENT" RATING',
-      lines: ['71 student & faculty evaluators', '140-case structured QA test suite', 'Automated regression test coverage'],
+      tag: 'QUALITY STANDARD', title: 'ISO/IEC 25010', score: '4.51 / 5.00',
+      lines: ['71 student & faculty evaluators', '140 structured QA test cases', 'Automated regression test suite'],
       col: C.scarlet,
     },
     {
-      tag: 'NETWORK HARDENING', title: 'Cisco L2/L3 Security', score: 'SSHv2 / ACL', stat: 'TOPOLOGY HARDENED',
-      lines: ['Multi-router Layer 2/3 topology', 'Telnet & HTTP cleartext elimination', 'VLAN segmentation & Extended ACLs'],
+      tag: 'NETWORK SECURITY', title: 'Cisco L2/L3', score: 'SSHv2 · ACL',
+      lines: ['Multi-router Layer 2/3 topology', 'Telnet & cleartext elimination', 'VLAN segmentation & Extended ACLs'],
       col: C.white,
     },
     {
-      tag: 'DATA COMPLIANCE', title: 'Legal & Risk Privacy', score: 'RA 10173', stat: 'NPC & GDPR AUDIT',
-      lines: ['Republic Act 10173 (DPA 2012) controls', 'HTTP-only JWT family token rotation', 'Atomic updates & immutable audit trail'],
+      tag: 'DATA PRIVACY', title: 'RA 10173', score: 'DPA 2012',
+      lines: ['Republic Act 10173 compliance', 'HTTP-only JWT token rotation', 'Atomic updates & audit logging'],
       col: C.rose,
     },
   ];
@@ -684,25 +655,24 @@ function securityAudit() {
       <path d="${cutBox(0, 0, colW, h, 10)}" fill="${C.panel2}" fill-opacity=".92" stroke="${C.lineBright}"/>
       ${cloudAt(colW - 68, h - 48, 0.52, { opacity: 0.12 })}
       <path d="M0 14L14 0" stroke="${c.col}" stroke-width="2.2"/>
-      ${cloudAt(14, 11, 0.18, { opacity: 0.95 })}
-      ${mono(38, 24, c.tag, { size: 9.5, fill: c.col, ls: 1.5, weight: 700 })}
-      ${text(16, 54, c.title, { size: 21, weight: 800, fill: C.white })}
-      ${mono(colW - 16, 36, c.score, { anchor: 'end', size: 13, weight: 700, fill: c.col, ls: 1 })}
-      ${mono(colW - 16, 52, c.stat, { anchor: 'end', size: 8.5, fill: C.muted, ls: 1 })}
-      <line x1="16" y1="66" x2="${colW - 16}" y2="66" stroke="${C.lineBright}"/>
-      ${c.lines.map((l, k) => `<circle cx="22" cy="${86 + k * 22}" r="2.2" fill="${C.scarlet}"/>${text(32, 90 + k * 22, l, { size: 12.5, fill: C.soft })}`).join('')}
+      ${shurikenAt(22, 20, 5, { color: c.col === C.white ? C.scarlet : c.col })}
+      ${mono(34, 24, c.tag, { size: 9.5, fill: c.col, ls: 1.5, weight: 700 })}
+      ${text(16, 52, c.title, { size: 21, weight: 800, fill: C.white })}
+      ${mono(colW - 16, 48, c.score, { anchor: 'end', size: 12.5, weight: 700, fill: c.col, ls: 1 })}
+      <line x1="16" y1="64" x2="${colW - 16}" y2="64" stroke="${C.lineBright}"/>
+      ${c.lines.map((l, k) => `<circle cx="22" cy="${84 + k * 22}" r="2.2" fill="${C.scarlet}"/>${text(32, 88 + k * 22, l, { size: 12.5, fill: C.soft })}`).join('')}
     </g>`;
   }).join('');
   const body = `<defs>${p.defs}</defs>${p.back}${items}${p.front}`;
-  return doc(W, H, 'Infrastructure Security, Cisco Hardening and ISO/IEC 25010 Evaluation', body);
+  return doc(W, H, 'Security and Quality Standards', body);
 }
 
 /* ================================================================ COMMS */
 
 const COMMS = [
-  { slug: 'email', label: 'EMAIL DIRECT', value: 'patrickjoshanedez35@gmail.com', icon: 'gmail' },
+  { slug: 'email', label: 'EMAIL', value: 'patrickjoshanedez35@gmail.com', icon: 'gmail' },
   { slug: 'linkedin', label: 'LINKEDIN', value: 'patrickjosh19', icon: 'linkedin' },
-  { slug: 'github', label: 'GITHUB PROFILE', value: '@Patkik', icon: 'github' },
+  { slug: 'github', label: 'GITHUB', value: '@Patkik', icon: 'github' },
   { slug: 'facebook', label: 'FACEBOOK', value: 'Patkik.juice', icon: 'facebook' },
 ];
 
@@ -733,16 +703,15 @@ async function badge({ label, value, icon: ic }, i) {
   </path>
   <path d="${cutBox(16, 15, 56, 56, 10)}" fill="${C.darkBlood}" fill-opacity=".8" stroke="${C.scarlet}" stroke-opacity=".85"/>
   ${iconAt(d, 30, 29, 28, C.white) || text(44, 51, label[0], { size: 24, weight: 800, fill: C.white, anchor: 'middle' })}
-  ${cloudAt(88, 22, 0.18, { opacity: 0.95 })}
-  ${mono(112, 35, `${label}  //  CHANNEL 0${i + 1}`, { size: 10, fill: C.scarlet, ls: 1.8, weight: 700 })}
+  ${shurikenAt(95, 31, 5)}
+  ${mono(108, 35, label, { size: 10.5, fill: C.scarlet, ls: 2, weight: 700 })}
   ${text(88, 62, value, { size: value.length > 25 ? 16 : 19, weight: 700, fill: C.white })}
-  <path d="M${W - 36} 37l8 6-8 6" fill="none" stroke="${C.scarlet}" stroke-width="2"/>
-  <path d="M${W - 46} 37l8 6-8 6" fill="none" stroke="${C.white}" stroke-opacity=".5" stroke-width="2"/>`;
+  ${shurikenAt(W - 34, 43, 6.5, { spin: true, dur: '10s' })}`;
   return doc(W, H, `${label}: ${value}`, body);
 }
 
 function footer() {
-  const W = 1200, H = 168;
+  const W = 1200, H = 136;
   const wave = (amp, y, len, step) => {
     let d = `M0 ${y}`;
     for (let x = 0; x <= len; x += step) d += ` Q${x + step / 2} ${y + ((x / step) % 2 ? amp : -amp)} ${x + step} ${y}`;
@@ -766,25 +735,22 @@ function footer() {
     ${GLOW}
   </defs>
   <rect width="${W}" height="${H}" fill="${C.void}"/>
-  <path d="${wave(10, 102, 2520, 120)}" fill="url(#f-b)">
+  <path d="${wave(9, 82, 2520, 120)}" fill="url(#f-b)">
     <animateTransform attributeName="transform" type="translate" values="0 0;-240 0" dur="7s" repeatCount="indefinite"/>
   </path>
-  <path d="${wave(8, 114, 2520, 160)}" fill="url(#f-a)">
+  <path d="${wave(7, 94, 2520, 160)}" fill="url(#f-a)">
     <animateTransform attributeName="transform" type="translate" values="-320 0;0 0" dur="9s" repeatCount="indefinite"/>
   </path>
 
-  ${cloudAt(140, 74, 0.55, { opacity: 0.85 })}
-  ${cloudAt(572, 82, 0.55, { opacity: 0.92 })}
-  ${cloudAt(1005, 74, 0.55, { opacity: 0.85 })}
+  ${cloudAt(140, 56, 0.55, { opacity: 0.85 })}
+  ${cloudAt(572, 64, 0.55, { opacity: 0.92 })}
+  ${cloudAt(1005, 56, 0.55, { opacity: 0.85 })}
 
-  <g transform="translate(360 32) scale(0.55)" opacity=".7"><path d="${CROW_PATH}" fill="${C.scarlet}"/></g>
-  <g transform="translate(820 26) scale(0.45)" opacity=".6"><path d="${CROW_PATH}" fill="${C.white}"/></g>
-
-  <rect x="260" y="42" width="680" height="1.5" fill="url(#f-l)"/>
-  ${mono(600, 30, 'END OF PORTFOLIO // TRANSMISSION COMPLETE', { anchor: 'middle', fill: C.scarlet, ls: 5.5, size: 12, weight: 700, extra: 'filter="url(#p-glow)"' })}
-  ${mono(600, 64, 'ARCHITECT WITH PRECISION  //  ENGINEER FOR SCALE  //  SHIP RELIABLE SYSTEMS', { anchor: 'middle', fill: C.text, ls: 2.5, size: 10 })}
-  ${mono(600, 152, 'ASSETS RENDERED BY SCRIPTS/GENERATE.MJS', { anchor: 'middle', fill: C.soft, ls: 2, size: 9, opacity: 0.7 })}`;
-  return doc(W, H, 'End of portfolio', body);
+  <rect x="320" y="34" width="560" height="1.5" fill="url(#f-l)"/>
+  ${shurikenAt(468, 22, 6, { spin: true })}
+  ${mono(600, 26, 'PATRICK JOSH AÑEDEZ', { anchor: 'middle', fill: C.white, ls: 4, size: 11.5, weight: 700 })}
+  ${shurikenAt(732, 22, 6, { spin: true })}`;
+  return doc(W, H, 'Patrick Josh Añedez', body);
 }
 
 /* ============================================================ TELEMETRY */
@@ -846,14 +812,13 @@ async function collect() {
 }
 
 function telemetry(t) {
-  const W = 1200, H = 626;
-  const now = new Date().toISOString().replace('T', ' ').slice(0, 16);
-  const p = panel(W, H, { label: 'ENGINEERING TELEMETRY // LIVE FEED', meta: `SYNC ${now} UTC`, cloudOpacity: 0.08 });
+  const W = 1200, H = 620;
+  const p = panel(W, H, { label: 'GITHUB ACTIVITY', cloudOpacity: 0.08 });
 
   const metrics = [
-    ['CONTRIBUTIONS', fmt(t.total), 'LAST 12 MONTHS'], ['ACTIVE DAYS', fmt(t.active), `OF ${t.days.length}`],
-    ['CURRENT STREAK', `${t.current}d`, t.current ? 'ACTIVE' : 'STANDBY'], ['LONGEST STREAK', `${t.longest}d`, 'LAST 12 MONTHS'],
-    ['REPOSITORIES', fmt(t.repos), 'OWNED REPOS'], ['PEAK OUTPUT', fmt(t.best), 'IN A SINGLE DAY'],
+    ['CONTRIBUTIONS', fmt(t.total), 'PAST YEAR'], ['ACTIVE DAYS', fmt(t.active), `OF ${t.days.length}`],
+    ['CURRENT STREAK', `${t.current}d`, t.current ? 'ACTIVE' : 'IDLE'], ['LONGEST STREAK', `${t.longest}d`, 'PAST YEAR'],
+    ['REPOSITORIES', fmt(t.repos), 'PUBLIC'], ['PEAK DAY', fmt(t.best), 'COMMITS'],
   ];
   const mw = (1120 - 5 * 12) / 6;
   const tiles = metrics.map(([l, v, s], k) => {
@@ -925,24 +890,22 @@ function telemetry(t) {
   </defs>
   ${p.back}
   ${tiles}
-  ${cloudAt(40, 164, 0.22, { opacity: 0.95 })}
-  ${mono(68, 178, 'CONTRIBUTION ACTIVITY  //  LAST 12 MONTHS', { fill: C.scarlet, ls: 2.5, weight: 700 })}
+  ${shurikenAt(48, 174, 6)}
+  ${mono(64, 178, 'CONTRIBUTIONS', { fill: C.scarlet, ls: 2.5, weight: 700 })}
   ${months.join('')}${weekdays}
   <g>${cells}</g>
-  ${mono(72, 378, `${fmt(t.total)} CONTRIBUTIONS RECORDED`, { size: 10, fill: C.soft, ls: 1.5 })}
   ${mono(1032, 378, 'LOW', { anchor: 'end', size: 9, ls: 1, fill: C.muted })}${legend}${mono(1136, 378, 'HIGH', { size: 9, ls: 1, fill: C.muted })}
 
-  <path d="${cutBox(40, 400, 550, 198, 12)}" fill="${C.void}" fill-opacity=".68" stroke="${C.lineBright}"/>
-  ${cloudAt(64, 420, 0.2, { opacity: 0.95 })}
-  ${mono(90, 434, 'LANGUAGE COMPOSITION', { fill: C.scarlet, ls: 2.5, weight: 700 })}
-  ${mono(566, 434, 'BY BYTES / OWN REPOS', { anchor: 'end', size: 9, fill: C.muted, ls: 1 })}
+  <path d="${cutBox(40, 400, 550, 194, 12)}" fill="${C.void}" fill-opacity=".68" stroke="${C.lineBright}"/>
+  ${shurikenAt(72, 430, 5.5)}
+  ${mono(88, 434, 'LANGUAGES', { fill: C.scarlet, ls: 2.5, weight: 700 })}
   <rect x="64" y="460" width="502" height="12" fill="${C.line}"/>${bar}
   ${langLegend}
 
-  <path d="${cutBox(610, 400, 550, 198, 12)}" fill="${C.void}" fill-opacity=".68" stroke="${C.lineBright}"/>
-  ${cloudAt(634, 420, 0.2, { opacity: 0.95 })}
-  ${mono(660, 434, 'WEEKLY OUTPUT  //  16 WEEKS', { fill: C.scarlet, ls: 2.5, weight: 700 })}
-  ${mono(1136, 434, `PEAK ${max} / WK`, { anchor: 'end', size: 9, fill: C.muted, ls: 1 })}
+  <path d="${cutBox(610, 400, 550, 194, 12)}" fill="${C.void}" fill-opacity=".68" stroke="${C.lineBright}"/>
+  ${shurikenAt(642, 430, 5.5)}
+  ${mono(658, 434, 'WEEKLY COMMITS', { fill: C.scarlet, ls: 2.5, weight: 700 })}
+  ${mono(1136, 434, `PEAK ${max}`, { anchor: 'end', size: 9.5, fill: C.muted, ls: 1 })}
   ${grid}
   <path d="${line}L${ax + aw} ${ay + ah}L${ax} ${ay + ah}Z" fill="url(#t-area)"/>
   <path d="${line}" fill="none" stroke="${C.scarlet}" stroke-width="2.2" filter="url(#p-glow)" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1">
@@ -952,7 +915,7 @@ function telemetry(t) {
   ${pts[peak] ? mono(pts[peak][0], pts[peak][1] - 10, String(max), { anchor: 'middle', size: 10, fill: C.white, ls: 0.5, weight: 700 }) : ''}
   ${mono(ax, ay + ah + 22, '-16W', { size: 9, fill: C.muted, ls: 1 })}${mono(ax + aw, ay + ah + 22, 'NOW', { anchor: 'end', size: 9, fill: C.muted, ls: 1 })}
   ${p.front}`;
-  return doc(W, H, `GitHub telemetry: ${t.total} contributions in the last year, ${t.repos} repositories`, body);
+  return doc(W, H, `GitHub Activity`, body);
 }
 
 async function snakeFrame() {
@@ -976,15 +939,15 @@ async function snakeFrame() {
   }
   const W = 1200, sw = 1120, sh = Math.round((sw * vb[3]) / vb[2]);
   const H = sh + 96;
-  const p = panel(W, H, { label: 'CONTRIBUTION GRAPH // AUTOMATED ACTIVITY', meta: 'AUTONOMOUS WORKFLOW  //  DAILY SYNC', cloudOpacity: 0.08 });
+  const p = panel(W, H, { label: 'CONTRIBUTION GRAPH', cloudOpacity: 0.08 });
   const content = inner
     ? `<svg x="40" y="56" width="${sw}" height="${sh}" viewBox="${vb.join(' ')}">${inner}</svg>`
     : `
       <g>
         ${cloudAt(W / 2 - 48, H / 2 - 44, 0.95, { opacity: 0.25 })}
-        ${mono(W / 2, H / 2 + 12, 'CONTRIBUTION GRAPH DEPLOYS ON WORKFLOW RUN', { anchor: 'middle', fill: C.soft, ls: 3, weight: 700 })}
+        ${mono(W / 2, H / 2 + 12, 'CONTRIBUTION GRAPH', { anchor: 'middle', fill: C.soft, ls: 3, weight: 700 })}
       </g>`;
-  return doc(W, H, 'Contribution activity graph', `<defs>${p.defs}</defs>${p.back}${content}${p.front}`);
+  return doc(W, H, 'Contribution Graph', `<defs>${p.defs}</defs>${p.back}${content}${p.front}`);
 }
 
 /* ================================================================= main */
@@ -993,14 +956,14 @@ await fs.mkdir(OUT, { recursive: true });
 console.log('Rendering static assets');
 await writeIfChanged('header.svg', await header());
 const sections = [
-  ['ENGINEER PROFILE', '// identity, academic credentials & active system deployments'],
-  ['TECHNICAL ARSENAL', '// languages, frameworks, data stores & cloud infrastructure'],
-  ['FEATURED SYSTEMS', '// production platforms, institutional architectures & ai pipelines'],
-  ['SECURITY & QUALITY AUDIT', '// cisco network security, iso/iec 25010 & data privacy'],
-  ['ENGINEERING TELEMETRY', '// live github analytics, regenerated daily'],
-  ['CONTACT & NETWORK', '// direct professional channels & developer profiles'],
+  ['ABOUT', 'Profile & Active Projects'],
+  ['TECH STACK', 'Languages, Frameworks & Tools'],
+  ['PROJECTS', 'Web, Mobile & AI Systems'],
+  ['SECURITY & QA', 'Network Hardening & Standards'],
+  ['ACTIVITY', 'Contributions & Languages'],
+  ['CONTACT', 'Direct Links & Socials'],
 ];
-for (const [k, [t, s]] of sections.entries()) await writeIfChanged(`section-0${k + 1}.svg`, section(k + 1, t, s, 6));
+for (const [k, [t, s]] of sections.entries()) await writeIfChanged(`section-0${k + 1}.svg`, section(k + 1, t, s));
 await writeIfChanged('dossier.svg', dossier());
 await writeIfChanged('arsenal.svg', await arsenal());
 for (const [k, pj] of PROJECTS.entries()) await writeIfChanged(`project-${pj.slug}.svg`, projectCard(pj, k));

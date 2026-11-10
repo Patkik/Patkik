@@ -6,64 +6,64 @@
 
 <br/>
 
-<img src="./assets/section-01.svg" width="100%" alt="01 Engineer Profile" />
+<img src="./assets/section-01.svg" width="100%" alt="01 About" />
 
-<img src="./assets/dossier.svg" width="100%" alt="Engineer dossier: 4th-Year BSIT student at Bukidnon State University, full-stack developer and systems architect. Active operations: BukSU CMS-V2, RacePulsePH, COMSOC Mentoring System, MedPulsePH, AudiobookTTSGenerator, World Supremacy Battlegrounds." />
-
-<br/><br/>
-
-<img src="./assets/section-02.svg" width="100%" alt="02 Technical Arsenal" />
-
-<img src="./assets/arsenal.svg" width="100%" alt="Tech stack: Rust, TypeScript, JavaScript, Python, Java, Kotlin, C++, PHP, SQL, React.js, React Native, Next.js, Compose, Tailwind, Vite, PWA, PaddleOCR, Android, FastAPI, Express 5, Node.js, MongoDB Atlas, Redis, ChromaDB, MinIO S3, PostgreSQL, BullMQ, Celery, Docker, Cisco L2/L3, RFID/Sensors, GitHub Actions, AWS, Linux Admin, Axum/Tokio, Cursor Pro, Claude Code" />
+<img src="./assets/dossier.svg" width="100%" alt="Profile: Patrick Josh S. Añedez" />
 
 <br/><br/>
 
-<img src="./assets/section-03.svg" width="100%" alt="03 Featured Systems" />
+<img src="./assets/section-02.svg" width="100%" alt="02 Tech Stack" />
 
-<p align="center">
-  <a href="https://github.com/Patkik/CMS-V2"><img src="./assets/project-cms-v2.svg" width="49%" alt="BukSU CMS-V2 Capstone Management System & Plagiarism Checker" /></a>
-  <a href="https://github.com/Patkik/RacePulsePH"><img src="./assets/project-racepulse.svg" width="49%" alt="RacePulsePH Athletic Event Timing" /></a>
-</p>
-<p align="center">
-  <a href="https://github.com/Patkik/Monitoring-Information-Systems"><img src="./assets/project-comsoc.svg" width="49%" alt="COMSOC Mentoring Information System" /></a>
-  <a href="https://github.com/Patkik/MedPulsePH"><img src="./assets/project-medpulse.svg" width="49%" alt="MedPulsePH Digital Healthcare Platform" /></a>
-</p>
-<p align="center">
-  <a href="https://github.com/Patkik/AudiobookTTSGenerator"><img src="./assets/project-audiobook.svg" width="49%" alt="AudiobookTTSGenerator Neural Pipeline" /></a>
-  <a href="https://github.com/Patkik/World-Supremacy-Battleground-app"><img src="./assets/project-wsb.svg" width="49%" alt="World Supremacy Battlegrounds Event Application" /></a>
-</p>
-
-<img src="./assets/archive-scrolls.svg" width="100%" alt="Additional Specialized Repositories: Kipit, Spirits of the Vale, Multi-Tenant SaaS Catering V2, Orchestrator Agentic System, Vortex Studio A.I, Barcelon Store" />
+<img src="./assets/arsenal.svg" width="100%" alt="Tech Stack" />
 
 <br/><br/>
 
-<img src="./assets/section-04.svg" width="100%" alt="04 Security & Quality Audit" />
+<img src="./assets/section-03.svg" width="100%" alt="03 Projects" />
 
-<img src="./assets/security-audit.svg" width="100%" alt="Enterprise Network Hardening, Cisco L2/L3 topology security, ISO/IEC 25010 4.51/5.00 evaluation, and Republic Act 10173 Data Privacy compliance" />
+<p align="center">
+  <a href="https://github.com/Patkik/CMS-V2"><img src="./assets/project-cms-v2.svg" width="49%" alt="BukSU CMS-V2" /></a>
+  <a href="https://github.com/Patkik/RacePulsePH"><img src="./assets/project-racepulse.svg" width="49%" alt="RacePulsePH" /></a>
+</p>
+<p align="center">
+  <a href="https://github.com/Patkik/Monitoring-Information-Systems"><img src="./assets/project-comsoc.svg" width="49%" alt="COMSOC Mentoring System" /></a>
+  <a href="https://github.com/Patkik/MedPulsePH"><img src="./assets/project-medpulse.svg" width="49%" alt="MedPulsePH" /></a>
+</p>
+<p align="center">
+  <a href="https://github.com/Patkik/AudiobookTTSGenerator"><img src="./assets/project-audiobook.svg" width="49%" alt="AudiobookTTSGenerator" /></a>
+  <a href="https://github.com/Patkik/World-Supremacy-Battleground-app"><img src="./assets/project-wsb.svg" width="49%" alt="World Supremacy Battlegrounds" /></a>
+</p>
+
+<img src="./assets/archive-scrolls.svg" width="100%" alt="More Projects" />
 
 <br/><br/>
 
-<img src="./assets/section-05.svg" width="100%" alt="05 Engineering Telemetry" />
+<img src="./assets/section-04.svg" width="100%" alt="04 Security & QA" />
 
-<img src="./assets/telemetry.svg" width="100%" alt="GitHub telemetry: contributions, streaks, repositories, language composition and weekly output" />
-
-<img src="./assets/snake.svg" width="100%" alt="Contribution activity graph" />
+<img src="./assets/security-audit.svg" width="100%" alt="Security and Quality Standards" />
 
 <br/><br/>
 
-<img src="./assets/section-06.svg" width="100%" alt="06 Contact & Network" />
+<img src="./assets/section-05.svg" width="100%" alt="05 Activity" />
+
+<img src="./assets/telemetry.svg" width="100%" alt="GitHub Activity" />
+
+<img src="./assets/snake.svg" width="100%" alt="Contribution Graph" />
+
+<br/><br/>
+
+<img src="./assets/section-06.svg" width="100%" alt="06 Contact" />
 
 <p align="center">
-  <a href="mailto:patrickjoshanedez35@gmail.com"><img src="./assets/comms-email.svg" width="49%" alt="Email: patrickjoshanedez35@gmail.com" /></a>
-  <a href="https://www.linkedin.com/in/patrickjosh19/"><img src="./assets/comms-linkedin.svg" width="49%" alt="LinkedIn: patrickjosh19" /></a>
+  <a href="mailto:patrickjoshanedez35@gmail.com"><img src="./assets/comms-email.svg" width="49%" alt="Email" /></a>
+  <a href="https://www.linkedin.com/in/patrickjosh19/"><img src="./assets/comms-linkedin.svg" width="49%" alt="LinkedIn" /></a>
 </p>
 <p align="center">
-  <a href="https://github.com/Patkik"><img src="./assets/comms-github.svg" width="49%" alt="GitHub: @Patkik" /></a>
-  <a href="https://www.facebook.com/Patkik.juice/"><img src="./assets/comms-facebook.svg" width="49%" alt="Facebook: Patkik.juice" /></a>
+  <a href="https://github.com/Patkik"><img src="./assets/comms-github.svg" width="49%" alt="GitHub" /></a>
+  <a href="https://www.facebook.com/Patkik.juice/"><img src="./assets/comms-facebook.svg" width="49%" alt="Facebook" /></a>
 </p>
 
 <p align="center">
-  <img src="https://komarev.com/ghpvc/?username=Patkik&label=PROFILE%20VIEWS&color=B91C1C&labelColor=050406&style=for-the-badge" alt="Profile views" />
+  <img src="https://komarev.com/ghpvc/?username=Patkik&label=VIEWS&color=B91C1C&labelColor=050406&style=for-the-badge" alt="Profile views" />
 </p>
 
-<img src="./assets/footer.svg" width="100%" alt="End of portfolio" />
+<img src="./assets/footer.svg" width="100%" alt="Patrick Josh Añedez" />
