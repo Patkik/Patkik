@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
- * AKATSUKI // ROGUE ARCHITECT - profile asset generator for github.com/Patkik
+ * Akatsuki Theme - Professional Engineering Portfolio Generator for github.com/Patkik
  *
  * Renders every SVG used by README.md into ./assets:
  *   header (Itachi base artwork + Akatsuki cloud pattern), section titles,
- *   dossier, arsenal, project scrolls, security audit, comms badges,
- *   footer (static design) and telemetry + snake frame (live data).
+ *   dossier, arsenal, project cards, archive repositories, security audit,
+ *   comms badges, footer (static design) and telemetry + snake frame (live data).
  *
  * Usage:  node scripts/generate.mjs
  * Env:    METRICS_TOKEN or GITHUB_TOKEN (optional, enables GraphQL calendar)
@@ -66,7 +66,7 @@ const tw = (s, size, mono = false, ls = 0) => String(s).length * size * (mono ? 
 const fmt = (n) => Number(n).toLocaleString('en-US');
 const r1 = (n) => Math.round(n * 10) / 10;
 
-/** Katana-cut octagonal/diagonal frame */
+/** Angled octagonal HUD frame */
 const cutBox = (x, y, w, h, c = 16) =>
   `M${x + c} ${y}H${x + w - c * 0.45}L${x + w} ${y + c * 0.45}V${y + h - c}L${x + w - c} ${y + h}H${x + c * 0.45}L${x} ${y + h - c * 0.45}V${y + c}Z`;
 
@@ -83,20 +83,19 @@ const GLOW = `<filter id="p-glow" x="-50%" y="-50%" width="200%" height="200%"><
 const cloudAt = (x, y, s = 0.28, { outline = C.white, fill = C.blood, opacity = 1, extra = '' } = {}) =>
   `<g transform="translate(${r1(x)} ${r1(y)}) scale(${s})" opacity="${opacity}" ${extra}><path d="${CLOUD_OUTER}" fill="${outline}"/><path d="${CLOUD_INNER}" fill="${fill}"/></g>`;
 
-/** Renders a spinning Sharingan / Mangekyou seal at (cx, cy) */
-const sharinganAt = (cx, cy, r = 10, dur = '10s') => `
+/** Renders a crimson geometric node indicator at (cx, cy) */
+const nodeRingAt = (cx, cy, r = 9, dur = '10s') => `
   <g transform="translate(${r1(cx)} ${r1(cy)})">
-    <circle r="${r}" fill="${C.blood}" stroke="${C.scarlet}" stroke-width="1.2"/>
-    <circle r="${r1(r * 0.58)}" fill="none" stroke="${C.void}" stroke-width="0.9" stroke-opacity=".7"/>
-    <g>
+    <circle r="${r}" fill="${C.darkBlood}" stroke="${C.scarlet}" stroke-width="1.2"/>
+    <circle r="${r1(r * 0.62)}" fill="none" stroke="${C.white}" stroke-width="0.9" stroke-opacity=".55" stroke-dasharray="4 3">
       <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="${dur}" repeatCount="indefinite"/>
-      ${[0, 120, 240].map((a) => `<g transform="rotate(${a})"><circle cx="0" cy="${r1(-r * 0.58)}" r="${r1(r * 0.19)}" fill="${C.void}"/><path d="M0 ${r1(-r * 0.77)} Q${r1(r * 0.28)} ${r1(-r * 0.58)} ${r1(r * 0.08)} ${r1(-r * 0.36)}" fill="${C.void}"/></g>`).join('')}
-    </g>
-    <circle r="${r1(r * 0.22)}" fill="${C.void}"/>
-    <circle r="${r1(r * 0.09)}" fill="${C.scarlet}"/>
+    </circle>
+    <circle r="${r1(r * 0.26)}" fill="${C.scarlet}" filter="url(#p-glow)">
+      <animate attributeName="opacity" values="1;.35;1" dur="2.2s" repeatCount="indefinite"/>
+    </circle>
   </g>`;
 
-/** Shared Akatsuki Cloak HUD Frame with repeating Akatsuki Cloud Pattern */
+/** Shared Akatsuki HUD Frame with repeating Akatsuki Cloud Pattern */
 function panel(w, h, { label = '', meta = '', c = 20, cloudOpacity = 0.075 } = {}) {
   const shape = cutBox(1, 1, w - 2, h - 2, c);
   const tabW = label ? Math.round(tw(label, 11, true, 2.4)) + 68 : 0;
@@ -139,7 +138,6 @@ function panel(w, h, { label = '', meta = '', c = 20, cloudOpacity = 0.075 } = {
     front: `
       <path d="${shape}" fill="none" stroke="${C.lineBright}" stroke-width="1.5"/>
       <path d="${cutBox(6, 6, w - 12, h - 12, c - 4)}" fill="none" stroke="url(#p-edge)" stroke-opacity=".32"/>
-      <!-- Katana corner slashes -->
       <path d="M1 ${c + 1}L${c + 1} 1" stroke="${C.scarlet}" stroke-width="2.6" filter="url(#p-glow)"/>
       <path d="M${w - 1} ${h - c - 1}L${w - c - 1} ${h - 1}" stroke="${C.scarlet}" stroke-width="2.6" filter="url(#p-glow)"/>
       <path d="M${w - 42} 1H${w - c * 0.45 - 1}L${w - 1} ${c * 0.45 + 1}V42" fill="none" stroke="${C.white}" stroke-opacity=".75" stroke-width="1.6"/>
@@ -194,7 +192,7 @@ const iconAt = (d, x, y, size, fill, opacity = 1) =>
 
 async function header() {
   const W = 1200, H = 430;
-  const p = panel(W, H, { label: 'AKATSUKI.SYS // S-RANK DOSSIER', meta: 'ROGUE NODE PATKIK  //  8.15N 125.13E', c: 24, cloudOpacity: 0.11 });
+  const p = panel(W, H, { label: 'PROFILE.SYS // EXECUTIVE PORTFOLIO', meta: 'NODE PATKIK  //  8.15N 125.13E', c: 24, cloudOpacity: 0.11 });
 
   let itachiDataUri = '';
   try {
@@ -220,7 +218,7 @@ async function header() {
     return s;
   }).join('');
 
-  // Floating crimson embers / Amaterasu sparks
+  // Floating crimson particles
   const embers = [
     [540, 380, 2.5, '5.5s', '0s'], [640, 400, 3.2, '6.8s', '1.2s'], [760, 390, 2.2, '4.9s', '2.1s'],
     [880, 410, 3.5, '6.2s', '0.7s'], [1020, 395, 2.8, '5.1s', '1.8s'], [1120, 385, 2.0, '7.0s', '0.4s'],
@@ -232,7 +230,6 @@ async function header() {
       <animate attributeName="opacity" values="0;.9;.7;0" keyTimes="0;.2;.75;1" dur="${dur}" begin="${begin}" repeatCount="indefinite"/>
     </circle>`).join('');
 
-  // Animated flying crows across the crimson right sky
   const crows = [
     { x: 690, y: 86, s: 0.65, dur: '11s', b: '0s' },
     { x: 820, y: 58, s: 0.48, dur: '14s', b: '2s' },
@@ -243,7 +240,6 @@ async function header() {
       <animateTransform attributeName="transform" type="translate" values="${x + 60} ${y + 15};${x - 90} ${y - 25};${x + 60} ${y + 15}" dur="${dur}" begin="${b}" repeatCount="indefinite" additive="replace"/>
     </g>`).join('');
 
-  // Tech seal tags floating along the katana slash divider
   const seals = [
     { x: 642, y: 108, l: 'RUST / AXUM' },
     { x: 612, y: 172, l: 'TYPESCRIPT / NEXT' },
@@ -263,19 +259,12 @@ async function header() {
 
   const body = `
   <defs>${p.defs}
-    <!-- Mask that seamlessly blends the left Akatsuki Cloud cloak area into the Itachi artwork on the right -->
     <linearGradient id="h-img-mask-grad" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#000000" stop-opacity="0"/>
       <stop offset=".16" stop-color="#ffffff" stop-opacity=".18"/>
       <stop offset=".36" stop-color="#ffffff" stop-opacity=".88"/>
       <stop offset=".52" stop-color="#ffffff" stop-opacity="1"/>
       <stop offset="1" stop-color="#ffffff" stop-opacity="1"/>
-    </linearGradient>
-    <linearGradient id="h-img-vfade" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ffffff" stop-opacity=".9"/>
-      <stop offset=".15" stop-color="#ffffff" stop-opacity="1"/>
-      <stop offset=".85" stop-color="#ffffff" stop-opacity="1"/>
-      <stop offset="1" stop-color="#000000" stop-opacity=".25"/>
     </linearGradient>
     <mask id="h-itachi-mask">
       <rect x="340" y="0" width="860" height="${H}" fill="url(#h-img-mask-grad)"/>
@@ -317,14 +306,11 @@ async function header() {
   <g clip-path="url(#p-clip)">
     <rect width="${W}" height="${H}" fill="url(#h-crimson-aura)"/>
 
-    <!-- Base Itachi & Crows Artwork -->
     ${itachiDataUri ? `<image href="${itachiDataUri}" x="360" y="-24" width="850" height="476" preserveAspectRatio="xMidYMid slice" mask="url(#h-itachi-mask)"/>` : ''}
 
-    <!-- Left dark cloak & Akatsuki cloud pattern overlay so typography is razor-sharp -->
     <rect width="${W}" height="${H}" fill="url(#h-left-cloak)"/>
     <rect width="680" height="${H}" fill="url(#ak-clouds)" opacity=".95"/>
 
-    <!-- Large drifting watermark Akatsuki clouds -->
     <g opacity=".16">
       ${cloudAt(48, 250, 1.35)}
       <animateTransform attributeName="transform" type="translate" values="0 0;18 -6;0 0" dur="9s" repeatCount="indefinite"/>
@@ -333,12 +319,10 @@ async function header() {
       ${cloudAt(420, 38, 0.95)}
       <animateTransform attributeName="transform" type="translate" values="0 0;-16 8;0 0" dur="11s" repeatCount="indefinite"/>
     </g>
-    <!-- Prominent Akatsuki Cloud crest on the bottom-right cloak area -->
     <g>
       ${cloudAt(1055, 336, 1.05, { opacity: 0.92 })}
     </g>
 
-    <!-- Diagonal Katana Slash Divider separating Dossier Text & Itachi Visual -->
     <line x1="695" y1="30" x2="545" y2="400" stroke="url(#h-slash)" stroke-width="2.2" filter="url(#p-glow)"/>
     <line x1="703" y1="30" x2="553" y2="400" stroke="${C.scarlet}" stroke-opacity=".35" stroke-width="1" stroke-dasharray="6 4"/>
 
@@ -346,25 +330,18 @@ async function header() {
     ${embers}
     ${seals}
 
-    <!-- Bottom crimson horizon pulse -->
     <rect x="0" y="${H - 5}" width="${W}" height="4" fill="${C.scarlet}" opacity=".75"/>
   </g>
 
-  <!-- Rogue Shinobi Status Header -->
-  ${sharinganAt(80, 62, 10, '9s')}
-  ${mono(100, 66, 'TSUKUYOMI ONLINE', { fill: C.scarlet, size: 10.5, weight: 700, ls: 2.2 })}
-  <!-- Slashed Rogue Village Symbol -->
-  <g transform="translate(248 52)">
-    <rect x="0" y="0" width="34" height="18" rx="3" fill="${C.panel3}" stroke="${C.muted}" stroke-width="1"/>
-    <circle cx="17" cy="9" r="3.5" fill="none" stroke="${C.soft}" stroke-width="1.2"/>
-    <line x1="3" y1="9" x2="31" y2="9" stroke="${C.scarlet}" stroke-width="2.2" filter="url(#p-glow)"/>
-  </g>
-  ${mono(294, 66, '//  AKATSUKI PROTOCOL v26.11', { size: 10.5, fill: C.soft, ls: 1.8 })}
+  <!-- System Status Header -->
+  ${nodeRingAt(78, 62, 8, '9s')}
+  ${mono(96, 66, 'SYSTEMS ONLINE', { fill: C.scarlet, size: 10.5, weight: 700, ls: 2.2 })}
+  ${mono(234, 66, '//  PORTFOLIO ARCHITECTURE v26.11', { size: 10.5, fill: C.soft, ls: 1.8 })}
 
   <!-- Identity Display -->
   <g transform="translate(68 92)">
     ${cloudAt(0, 0, 0.28, { opacity: 0.95 })}
-    ${mono(38, 16, 'S-RANK OPERATIVE  //  LEAD SYSTEMS ARCHITECT', { fill: C.scarlet, ls: 3.2, size: 11, weight: 700 })}
+    ${mono(38, 16, 'SOFTWARE ENGINEER  //  FULL-STACK & SYSTEMS ARCHITECT', { fill: C.scarlet, ls: 3, size: 11, weight: 700 })}
   </g>
 
   ${text(66, 184, 'PATRICK JOSH', { size: 68, weight: 900, fill: 'url(#h-name)', ls: 3 })}
@@ -374,7 +351,7 @@ async function header() {
   ${text(70, 308, 'Full-Stack Developer  ·  Systems & AI Engineer', { size: 21, fill: C.text, weight: 600, ls: 0.6 })}
   ${chipSvg}
   ${p.front}`;
-  return doc(W, H, 'Patrick Josh Añedez - Akatsuki Theme Full-Stack Developer, Systems & AI Engineer', body);
+  return doc(W, H, 'Patrick Josh Añedez - Full-Stack Developer, Systems & AI Engineer', body);
 }
 
 /* ======================================================= SECTION TITLES */
@@ -386,7 +363,6 @@ function section(idx, title, sub, total = 6) {
   const lineStart = Math.max(150 + tW + 24, 150 + tw(sub, 11.5, true, 1.2) + 24);
   const lineEnd = 1068;
 
-  // Repeating mini Akatsuki clouds along the katana divider bar
   const cloudMarks = [];
   for (let x = lineStart + 30; x <= lineEnd - 60; x += 110) {
     cloudMarks.push(cloudAt(x, 31, 0.24, { opacity: 0.78 }));
@@ -400,31 +376,27 @@ function section(idx, title, sub, total = 6) {
       <stop offset="1" stop-color="${C.crimson}" stop-opacity=".1"/>
     </linearGradient>
   </defs>
-  <!-- Left S-Rank Seal Box with Rogue Horizontal Slash -->
   <path d="${cutBox(2, 15, 76, 64, 12)}" fill="${C.darkBlood}" fill-opacity=".85" stroke="${C.scarlet}" stroke-width="1.5"/>
   <path d="${cutBox(6, 19, 68, 56, 9)}" fill="none" stroke="${C.white}" stroke-opacity=".35"/>
   <line x1="8" y1="47" x2="70" y2="47" stroke="${C.scarlet}" stroke-opacity=".35" stroke-width="2"/>
   ${text(40, 56, n, { font: MONO, size: 26, weight: 800, fill: C.white, anchor: 'middle', extra: 'filter="url(#p-glow)"' })}
 
-  <!-- Iconic Akatsuki Cloud Emblem next to section title -->
   ${cloudAt(92, 24, 0.44, { opacity: 0.96 })}
 
   ${text(148, 50, title, { size: 25, weight: 800, ls: 4, fill: C.white })}
   ${mono(149, 73, sub, { size: 11.5, ls: 1.2, fill: C.soft })}
 
-  <!-- Katana Blade Line & Cloud Pattern Track -->
   <line x1="${r1(lineStart)}" y1="42" x2="${lineEnd}" y2="42" stroke="url(#s-blade)" stroke-width="2"/>
   <line x1="${r1(lineStart)}" y1="48" x2="${lineEnd - 40}" y2="48" stroke="${C.lineBright}" stroke-width="1" stroke-dasharray="8 6"/>
   ${cloudMarks.join('')}
 
-  <!-- Animated Crimson Slash Pulse -->
   <rect y="40" width="54" height="4" rx="2" fill="${C.scarlet}" filter="url(#p-glow)">
     <animate attributeName="x" values="${r1(lineStart)};${lineEnd - 54}" dur="3.2s" repeatCount="indefinite"/>
     <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.1;.85;1" dur="3.2s" repeatCount="indefinite"/>
   </rect>
 
-  ${sharinganAt(lineEnd + 16, 44, 8, '12s')}
-  ${mono(1196, 48, `SCROLL ${n}/${String(total).padStart(2, '0')}`, { anchor: 'end', fill: C.muted, size: 10.5, ls: 1.5 })}`;
+  ${nodeRingAt(lineEnd + 16, 44, 7, '12s')}
+  ${mono(1196, 48, `SEC.${n} / ${String(total).padStart(2, '0')}`, { anchor: 'end', fill: C.muted, size: 10.5, ls: 1.5 })}`;
   return doc(W, H, `${n} ${title}`, body);
 }
 
@@ -432,15 +404,15 @@ function section(idx, title, sub, total = 6) {
 
 function dossier() {
   const W = 1200, H = 490;
-  const p = panel(W, H, { label: 'BINGO BOOK DOSSIER // S-RANK ARCHITECT', meta: 'VERIFIED CREDENTIALS // ISO/IEC 25010', cloudOpacity: 0.08 });
+  const p = panel(W, H, { label: 'ENGINEER DOSSIER // TECHNICAL PORTFOLIO', meta: 'VERIFIED CREDENTIALS // ISO/IEC 25010', cloudOpacity: 0.08 });
   const rows = [
-    ['OPERATIVE', 'Patrick Josh S. Añedez'],
-    ['ALIAS', 'DracoNox  /  @Patkik'],
-    ['RANK / CLASS', 'S-Rank  ·  Full-Stack & Systems Architect'],
-    ['AFFILIATION', 'Bukidnon State University (4th-Year BSIT)'],
-    ['STRONGHOLD', 'Malaybalay City, Bukidnon, Philippines'],
-    ['COMMAND', 'Lead Architect (CMS-V2)  /  Lead Dev (COMSOC)'],
-    ['SPECIALTIES', 'Async Microservices, RFID Telemetry, Hardening'],
+    ['ENGINEER', 'Patrick Josh S. Añedez'],
+    ['HANDLE', 'DracoNox  /  @Patkik'],
+    ['ROLE', 'Full-Stack Developer & Systems Architect'],
+    ['INSTITUTION', 'Bukidnon State University (4th-Year BSIT)'],
+    ['LOCATION', 'Malaybalay City, Bukidnon, Philippines'],
+    ['LEADERSHIP', 'Lead Architect (CMS-V2)  /  Lead Dev (COMSOC)'],
+    ['ENGINEERING', 'Async Microservices, RFID Telemetry, Hardening'],
     ['EVALUATION', 'ISO/IEC 25010 4.51/5.00 ("Excellent")  /  140 QA Cases'],
   ];
   const left = rows.map(([k, v], i) => {
@@ -453,35 +425,34 @@ function dossier() {
   }).join('');
 
   const status = {
-    'S-RANK': { bg: C.darkBlood, border: C.scarlet, text: C.white },
-    'A-RANK': { bg: '#2A0E17', border: C.rose, text: C.rose },
-    'ANBU':   { bg: '#27120B', border: C.ember, text: C.ember },
+    FLAGSHIP:   { bg: C.darkBlood, border: C.scarlet, text: C.white },
+    PRODUCTION: { bg: '#2A0E17', border: C.rose, text: C.rose },
+    PIPELINE:   { bg: '#27120B', border: C.ember, text: C.ember },
   };
   const ops = [
-    ['S-RANK', 'BukSU CMS-V2 (Project Workspace)', 'CHROMA VECTOR SIMILARITY / 4-TIER RBAC / DOCKER'],
-    ['S-RANK', 'RacePulsePH Event Timing', 'REAL-TIME RFID BIB & FINISH-LINE SENSOR SUITE'],
-    ['A-RANK', 'COMSOC Mentoring Info System', 'PEER-TUTORING & PROGRAMMING MENTORSHIP MATCHING'],
-    ['A-RANK', 'MedPulsePH Health Platform', 'VITAL TELEMETRY & CLINICAL ACCESS / RUST & POSTGRES'],
-    ['ANBU',   'AudiobookTTSGenerator', 'NEURAL TTS CHUNKING & BOUNDARY NORMALIZATION'],
-    ['ANBU',   'WSB Dance Championship App', 'REAL-TIME BRACKET TRACKING & LIVE JUDGING SCORES'],
+    ['FLAGSHIP',   'BukSU CMS-V2 (Project Workspace)', 'CHROMA VECTOR SIMILARITY / 4-TIER RBAC / DOCKER'],
+    ['FLAGSHIP',   'RacePulsePH Event Timing', 'REAL-TIME RFID BIB & FINISH-LINE SENSOR SUITE'],
+    ['PRODUCTION', 'COMSOC Mentoring Info System', 'PEER-TUTORING & PROGRAMMING MENTORSHIP MATCHING'],
+    ['PRODUCTION', 'MedPulsePH Health Platform', 'VITAL TELEMETRY & CLINICAL ACCESS / RUST & POSTGRES'],
+    ['PIPELINE',   'AudiobookTTSGenerator', 'NEURAL TTS CHUNKING & BOUNDARY NORMALIZATION'],
+    ['PRODUCTION', 'WSB Dance Championship App', 'REAL-TIME BRACKET TRACKING & LIVE JUDGING SCORES'],
   ];
   const right = ops.map(([s, name, sub], i) => {
     const y = 124 + i * 50;
     const st = status[s];
     return `
-      <path d="${cutBox(666, y - 16, 106, 24, 6)}" fill="${st.bg}" stroke="${st.border}" stroke-opacity=".85"/>
-      ${cloudAt(674, y - 11, 0.18, { opacity: 0.95 })}
-      ${mono(732, y, s, { anchor: 'middle', size: 9.5, fill: st.text, ls: 1.5, weight: 700 })}
-      ${text(786, y + 1, name, { size: 16, weight: 700, fill: C.white })}
-      ${mono(786, y + 20, sub, { size: 9.5, fill: C.muted, ls: 1.1 })}`;
+      <path d="${cutBox(666, y - 16, 114, 24, 6)}" fill="${st.bg}" stroke="${st.border}" stroke-opacity=".85"/>
+      ${cloudAt(674, y - 11, 0.16, { opacity: 0.95 })}
+      ${mono(734, y, s, { anchor: 'middle', size: 9, fill: st.text, ls: 1.2, weight: 700 })}
+      ${text(792, y + 1, name, { size: 16, weight: 700, fill: C.white })}
+      ${mono(792, y + 20, sub, { size: 9.5, fill: C.muted, ls: 1.1 })}`;
   }).join('');
 
-  const prompt = 'patkik@akatsuki:~$ cargo run --release --bin sharingan-audit';
+  const prompt = 'patkik@workstation:~$ cargo run --release --bin portfolio-audit';
   const body = `
   <defs>${p.defs}</defs>
   ${p.back}
   <g clip-path="url(#p-clip)">
-    <!-- Center Katana Pillar -->
     <rect x="636" y="56" width="1.5" height="346" fill="${C.lineBright}"/>
     <rect x="635.5" y="56" width="2.5" height="64" fill="${C.scarlet}" filter="url(#p-glow)">
       <animate attributeName="y" values="56;338;56" dur="6s" repeatCount="indefinite"/>
@@ -490,18 +461,17 @@ function dossier() {
   </g>
   ${left}
   ${cloudAt(666, 68, 0.24, { opacity: 0.95 })}
-  ${mono(698, 82, 'ACTIVE S-RANK CONTRACTS & SYSTEMS', { fill: C.scarlet, ls: 2.5, weight: 700 })}
+  ${mono(698, 82, 'FEATURED CAMPUS & ENTERPRISE SYSTEMS', { fill: C.scarlet, ls: 2.5, weight: 700 })}
   ${right}
-  <!-- Bottom Rogue Terminal Bar -->
   <path d="${cutBox(40, 418, 1120, 46, 10)}" fill="${C.void}" stroke="${C.lineBright}"/>
-  ${sharinganAt(64, 441, 8, '8s')}
+  ${nodeRingAt(64, 441, 7, '8s')}
   ${mono(82, 445, prompt, { size: 13, fill: C.scarlet, ls: 0.5, weight: 600 })}
   <rect x="${r1(82 + tw(prompt, 13, true, 0.5) + 8)}" y="432" width="9" height="16" fill="${C.white}">
     <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;.5;.5;1" dur="1.1s" repeatCount="indefinite"/>
   </rect>
   ${mono(1138, 445, 'EXIT 0  //  ISO/IEC 25010 VERIFIED  //  QA 140/140 PASSED', { anchor: 'end', size: 10.5, fill: C.white, ls: 1.5 })}
   ${p.front}`;
-  return doc(W, H, 'Bingo Book Dossier: Patrick Josh S. Añedez - Akatsuki Technical Portfolio', body);
+  return doc(W, H, 'Engineer dossier: Patrick Josh S. Añedez - Technical & Software Engineering Portfolio', body);
 }
 
 /* ============================================================== ARSENAL */
@@ -523,7 +493,7 @@ const ARSENAL = [
 
 async function arsenal() {
   const W = 1200, H = 660;
-  const p = panel(W, H, { label: 'SHINOBI ARSENAL // ELEMENTAL MATRIX', meta: `${ARSENAL.reduce((a, c) => a + c.items.length, 0)} JUTSU LOADED`, cloudOpacity: 0.08 });
+  const p = panel(W, H, { label: 'TECHNICAL ARSENAL // CORE STACK', meta: `${ARSENAL.reduce((a, c) => a + c.items.length, 0)} TECHNOLOGIES LOADED`, cloudOpacity: 0.08 });
   const tileW = 116, tileH = 120, gap = 9, x0 = 64, y0 = 108;
   let legendX = 64;
   const legend = ARSENAL.map(({ cat, color }) => {
@@ -547,7 +517,6 @@ async function arsenal() {
       const shape = cutBox(0, 0, tileW, tileH, 11);
       rows.push(`<g transform="translate(${x} ${y})">
         <path d="${shape}" fill="${C.panel2}" fill-opacity=".94"/>
-        <!-- Subtle watermark Akatsuki cloud inside each tile -->
         ${cloudAt(tileW - 46, tileH - 38, 0.38, { opacity: 0.09 })}
         <path d="${shape}" fill="${C.scarlet}" fill-opacity="0">
           <animate attributeName="fill-opacity" values="0;.16;0;0" keyTimes="0;.04;.1;1" dur="8s" begin="${begin}s" repeatCount="indefinite"/>
@@ -565,35 +534,35 @@ async function arsenal() {
     }
   }
   const body = `<defs>${p.defs}</defs>${p.back}${legend}${rows.join('')}${p.front}`;
-  return doc(W, H, 'Akatsuki Arsenal: languages, interface, backend and systems tooling', body);
+  return doc(W, H, 'Technical Arsenal: languages, interface, backend and systems tooling', body);
 }
 
 /* ========================================================= PROJECT CARDS */
 
 const PROJECTS = [
-  { slug: 'cms-v2', repo: 'CMS-V2', title: 'BukSU CMS-V2 (Project Workspace)', tag: 'S-RANK // CAPSTONE & PLAGIARISM', lang: ['JavaScript', '#F1E05A'],
+  { slug: 'cms-v2', repo: 'CMS-V2', title: 'BukSU CMS-V2 (Project Workspace)', tag: 'FLAGSHIP // CAPSTONE & PLAGIARISM', lang: ['JavaScript', '#F1E05A'],
     desc: 'Full-stack institutional capstone platform with async lexical winnowing + ChromaDB vector similarity across 22 audited algorithms, 4-tier RBAC, and Docker. Rated 4.51/5.00 ("Excellent") on ISO/IEC 25010 with 140 QA test cases.',
     chips: ['React.js', 'Express 5', 'FastAPI', 'ChromaDB', 'Redis', 'Docker'] },
-  { slug: 'racepulse', repo: 'RacePulsePH', title: 'RacePulsePH', tag: 'S-RANK // ATHLETIC EVENT TIMING', lang: ['TypeScript', '#3178C6'],
+  { slug: 'racepulse', repo: 'RacePulsePH', title: 'RacePulsePH', tag: 'FLAGSHIP // ATHLETIC EVENT TIMING', lang: ['TypeScript', '#3178C6'],
     desc: 'Athletic timing and race management system. Calibrated RFID bib scanners and finish-line checkpoint antenna hardware with real-time web dashboards and React Native mobile leaderboards.',
     chips: ['React Native', 'React.js', 'RFID', 'REST APIs', 'Sensors'] },
-  { slug: 'comsoc', repo: 'Monitoring-Information-Systems', title: 'COMSOC Mentoring Info System', tag: 'A-RANK // BUKSU COMPUTER SOCIETY', lang: ['TypeScript', '#3178C6'],
+  { slug: 'comsoc', repo: 'Monitoring-Information-Systems', title: 'COMSOC Mentoring Info System', tag: 'PRODUCTION // BUKSU COMPUTER SOCIETY', lang: ['TypeScript', '#3178C6'],
     desc: 'Automated peer-tutoring and programming mentorship matching system engineered as Lead Developer for BukSU Computer Society (COMSOC) with role-based session scheduling and conflict-free tracking.',
     chips: ['TypeScript', 'MongoDB Atlas', 'Session Scheduling', 'RBAC'] },
-  { slug: 'medpulse', repo: 'MedPulsePH', title: 'MedPulsePH', tag: 'S-RANK // DIGITAL HEALTHCARE', lang: ['Rust', '#DEA584'],
+  { slug: 'medpulse', repo: 'MedPulsePH', title: 'MedPulsePH', tag: 'SPECIALIZED // DIGITAL HEALTHCARE', lang: ['Rust', '#DEA584'],
     desc: 'Digital healthcare platform centered on NFC wristbands and patient-authorized clinical access, with split identity and clinical PostgreSQL vaults, Redis, and health telemetry APIs.',
     chips: ['Rust API', 'React Native', 'PostgreSQL', 'Redis', 'NFC'] },
-  { slug: 'audiobook', repo: 'AudiobookTTSGenerator', title: 'AudiobookTTSGenerator', tag: 'ANBU // NEURAL TEXT-TO-SPEECH', lang: ['Python', '#3572A5'],
+  { slug: 'audiobook', repo: 'AudiobookTTSGenerator', title: 'AudiobookTTSGenerator', tag: 'PIPELINE // NEURAL TEXT-TO-SPEECH', lang: ['Python', '#3572A5'],
     desc: 'Automated document-to-audiobook pipeline that extracts chapter text from manuscripts and ebooks, handles sentence chunking and boundary normalization, and batches high-fidelity neural audio.',
     chips: ['Python', 'Neural TTS', 'Audio Processing', 'CLI / Batch'] },
-  { slug: 'wsb', repo: 'World-Supremacy-Battleground-app', title: 'World Supremacy Battlegrounds', tag: 'S-RANK // EVENT SCORING & BRACKETS', lang: ['Rust', '#DEA584'],
+  { slug: 'wsb', repo: 'World-Supremacy-Battleground-app', title: 'World Supremacy Battlegrounds', tag: 'ENTERPRISE // EVENT SCORING & BRACKETS', lang: ['Rust', '#DEA584'],
     desc: 'Competition platform engineered for the international street dance championship, supporting participant registration, competition bracket tracking, real-time judging, and live leaderboard scoring.',
     chips: ['Next.js', 'Rust Axum', 'Firebase', 'Real-Time DB', 'Docker'] },
 ];
 
 function projectCard(pj, i) {
   const W = 600, H = 306;
-  const id = `SCROLL-${String(i + 1).padStart(2, '0')}`;
+  const id = `SYS-${String(i + 1).padStart(2, '0')}`;
   const shape = cutBox(1, 1, W - 2, H - 2, 18);
   const lines = wrap(pj.desc, 65).slice(0, 4);
   let cx = 32;
@@ -632,7 +601,6 @@ function projectCard(pj, i) {
   <path d="${shape}" fill="url(#c-bg)"/>
   <path d="${shape}" fill="url(#c-clouds)"/>
   <g clip-path="url(#c-clip)">
-    <!-- Large corner Akatsuki Cloud watermark -->
     ${cloudAt(W - 175, H - 128, 1.55, { opacity: 0.14 })}
     <text x="${W - 22}" y="${H - 38}" font-family="${MONO}" font-size="112" font-weight="800" fill="${C.scarlet}" fill-opacity=".045" text-anchor="end">${String(i + 1).padStart(2, '0')}</text>
     <rect x="0" y="0" width="${W}" height="3.5" fill="url(#c-top)"/>
@@ -644,7 +612,6 @@ function projectCard(pj, i) {
   <path d="M1 19L19 1" stroke="${C.scarlet}" stroke-width="2.6" filter="url(#p-glow)"/>
   <path d="M${W - 26} 1H${W - 9}L${W - 1} 9V26" fill="none" stroke="${C.white}" stroke-opacity=".8" stroke-width="1.6"/>
 
-  <!-- Top Mission Tag with Akatsuki Cloud Icon -->
   ${cloudAt(30, 30, 0.23, { opacity: 0.95 })}
   ${mono(60, 45, `${id}  //  ${pj.tag}`, { fill: C.scarlet, ls: 1.8, weight: 700 })}
   <circle cx="${W - 32 - tw(pj.lang[0], 11, true, 1) - 12}" cy="41" r="5" fill="${pj.lang[1]}"/>
@@ -656,14 +623,14 @@ function projectCard(pj, i) {
 
   <line x1="32" y1="268" x2="${W - 32}" y2="268" stroke="${C.lineBright}"/>
   ${mono(32, 288, `github.com/${USER}/${pj.repo}`.slice(0, 52), { size: 10, fill: C.muted, ls: 0.8 })}
-  ${mono(W - 50, 288, 'UNSEAL REPOSITORY', { anchor: 'end', size: 10.5, fill: C.scarlet, ls: 2, weight: 700 })}
+  ${mono(W - 50, 288, 'VIEW REPOSITORY', { anchor: 'end', size: 10.5, fill: C.scarlet, ls: 2, weight: 700 })}
   <path d="M${W - 42} 280l6 4.5-6 4.5" fill="none" stroke="${C.white}" stroke-width="1.6"/>`;
   return doc(W, H, `${pj.title} - ${pj.desc}`, body);
 }
 
 function archiveScrolls() {
   const W = 1200, H = 256;
-  const p = panel(W, H, { label: 'ADDITIONAL SCROLLS // SPECIALIZED REPOSITORIES & TOOLING', meta: 'OWNED ARCHIVES // VERIFIED', cloudOpacity: 0.08 });
+  const p = panel(W, H, { label: 'ADDITIONAL REPOSITORIES // SPECIALIZED SYSTEMS & TOOLING', meta: 'VERIFIED REPOSITORIES', cloudOpacity: 0.08 });
   const items = [
     ['Kipit', 'KOTLIN / COMPOSE', 'Native Android offline-first budget tracker with Room persistence & Hilt DI.'],
     ['Spirits of the Vale', 'JAVA / 2D ENGINE', 'Top-down RPG engine with custom state-machine NPC behaviors & collision physics.'],
@@ -692,7 +659,7 @@ function archiveScrolls() {
 
 function securityAudit() {
   const W = 1200, H = 258;
-  const p = panel(W, H, { label: 'ANBU BARRIER // INFRASTRUCTURE HARDENING & QA', meta: 'VERIFIED ENGINEERING CONTROLS', cloudOpacity: 0.08 });
+  const p = panel(W, H, { label: 'STANDARDS // INFRASTRUCTURE HARDENING & QA', meta: 'VERIFIED ENGINEERING CONTROLS', cloudOpacity: 0.08 });
   const colW = 356, h = 156, y = 64;
   const cols = [
     {
@@ -767,7 +734,7 @@ async function badge({ label, value, icon: ic }, i) {
   <path d="${cutBox(16, 15, 56, 56, 10)}" fill="${C.darkBlood}" fill-opacity=".8" stroke="${C.scarlet}" stroke-opacity=".85"/>
   ${iconAt(d, 30, 29, 28, C.white) || text(44, 51, label[0], { size: 24, weight: 800, fill: C.white, anchor: 'middle' })}
   ${cloudAt(88, 22, 0.18, { opacity: 0.95 })}
-  ${mono(112, 35, `${label}  //  CROW LINK 0${i + 1}`, { size: 10, fill: C.scarlet, ls: 1.8, weight: 700 })}
+  ${mono(112, 35, `${label}  //  CHANNEL 0${i + 1}`, { size: 10, fill: C.scarlet, ls: 1.8, weight: 700 })}
   ${text(88, 62, value, { size: value.length > 25 ? 16 : 19, weight: 700, fill: C.white })}
   <path d="M${W - 36} 37l8 6-8 6" fill="none" stroke="${C.scarlet}" stroke-width="2"/>
   <path d="M${W - 46} 37l8 6-8 6" fill="none" stroke="${C.white}" stroke-opacity=".5" stroke-width="2"/>`;
@@ -806,20 +773,18 @@ function footer() {
     <animateTransform attributeName="transform" type="translate" values="-320 0;0 0" dur="9s" repeatCount="indefinite"/>
   </path>
 
-  <!-- Floating Akatsuki Clouds across the horizon -->
   ${cloudAt(140, 74, 0.55, { opacity: 0.85 })}
   ${cloudAt(572, 82, 0.55, { opacity: 0.92 })}
   ${cloudAt(1005, 74, 0.55, { opacity: 0.85 })}
 
-  <!-- Crows silhouettes -->
   <g transform="translate(360 32) scale(0.55)" opacity=".7"><path d="${CROW_PATH}" fill="${C.scarlet}"/></g>
   <g transform="translate(820 26) scale(0.45)" opacity=".6"><path d="${CROW_PATH}" fill="${C.white}"/></g>
 
   <rect x="260" y="42" width="680" height="1.5" fill="url(#f-l)"/>
-  ${mono(600, 30, 'AKATSUKI PROTOCOL // END OF TRANSMISSION', { anchor: 'middle', fill: C.scarlet, ls: 5.5, size: 12, weight: 700, extra: 'filter="url(#p-glow)"' })}
-  ${mono(600, 64, 'WALK IN THE SHADOWS  //  ARCHITECT WITH PRECISION  //  SHIP S-RANK SYSTEMS', { anchor: 'middle', fill: C.text, ls: 2.5, size: 10 })}
-  ${mono(600, 152, 'RENDERED BY SCRIPTS/GENERATE.MJS  ·  AKATSUKI CLOUD EDITION', { anchor: 'middle', fill: C.soft, ls: 2, size: 9, opacity: 0.7 })}`;
-  return doc(W, H, 'End of transmission - Akatsuki Cloud Edition', body);
+  ${mono(600, 30, 'END OF PORTFOLIO // TRANSMISSION COMPLETE', { anchor: 'middle', fill: C.scarlet, ls: 5.5, size: 12, weight: 700, extra: 'filter="url(#p-glow)"' })}
+  ${mono(600, 64, 'ARCHITECT WITH PRECISION  //  ENGINEER FOR SCALE  //  SHIP RELIABLE SYSTEMS', { anchor: 'middle', fill: C.text, ls: 2.5, size: 10 })}
+  ${mono(600, 152, 'ASSETS RENDERED BY SCRIPTS/GENERATE.MJS', { anchor: 'middle', fill: C.soft, ls: 2, size: 9, opacity: 0.7 })}`;
+  return doc(W, H, 'End of portfolio', body);
 }
 
 /* ============================================================ TELEMETRY */
@@ -883,12 +848,11 @@ async function collect() {
 function telemetry(t) {
   const W = 1200, H = 626;
   const now = new Date().toISOString().replace('T', ' ').slice(0, 16);
-  const p = panel(W, H, { label: 'SHARINGAN TELEMETRY // LIVE FEED', meta: `SYNC ${now} UTC`, cloudOpacity: 0.08 });
+  const p = panel(W, H, { label: 'ENGINEERING TELEMETRY // LIVE FEED', meta: `SYNC ${now} UTC`, cloudOpacity: 0.08 });
 
-  // metric tiles
   const metrics = [
     ['CONTRIBUTIONS', fmt(t.total), 'LAST 12 MONTHS'], ['ACTIVE DAYS', fmt(t.active), `OF ${t.days.length}`],
-    ['CURRENT STREAK', `${t.current}d`, t.current ? 'MANGEKYOU ACTIVE' : 'STANDBY'], ['LONGEST STREAK', `${t.longest}d`, 'LAST 12 MONTHS'],
+    ['CURRENT STREAK', `${t.current}d`, t.current ? 'ACTIVE' : 'STANDBY'], ['LONGEST STREAK', `${t.longest}d`, 'LAST 12 MONTHS'],
     ['REPOSITORIES', fmt(t.repos), 'OWNED REPOS'], ['PEAK OUTPUT', fmt(t.best), 'IN A SINGLE DAY'],
   ];
   const mw = (1120 - 5 * 12) / 6;
@@ -903,7 +867,6 @@ function telemetry(t) {
       ${mono(x + 16, 132, s, { size: 9, fill: k === 2 && t.current ? C.scarlet : C.muted, ls: 1.2, weight: 600 })}`;
   }).join('');
 
-  // heatmap in Akatsuki Crimson & Obsidian shades
   const step = 20.5, cell = 16, hx = 72, hy = 212;
   const first = new Date(`${t.days[0]?.date ?? '2026-01-01'}T00:00:00Z`).getUTCDay();
   const shades = ['#181116', '#4A080C', '#8B110B', '#D90429', C.scarlet];
@@ -926,7 +889,6 @@ function telemetry(t) {
   const weekdays = ['MON', 'WED', 'FRI'].map((w, k) => mono(40, hy + (1 + k * 2) * step + 12, w, { size: 9, ls: 1, fill: C.muted })).join('');
   const legend = shades.map((s, k) => `<rect x="${1040 + k * 18}" y="368" width="12" height="12" rx="2" fill="${s}"/>`).join('');
 
-  // languages
   const totalBytes = t.langs.reduce((a, [, v]) => a + v, 0) || 1;
   const top = t.langs.slice(0, 5);
   const other = t.langs.slice(5).reduce((a, [, v]) => a + v, 0);
@@ -944,7 +906,6 @@ function telemetry(t) {
     return `<rect x="${x}" y="${y - 10}" width="10" height="10" fill="${lc[k]}"/>${text(x + 20, y, name, { size: 14, fill: C.soft })}${mono(x + 230, y, `${((v / totalBytes) * 100).toFixed(1)}%`, { anchor: 'end', size: 11, fill: C.white, ls: 0.5 })}`;
   }).join('');
 
-  // weekly output chart
   const weeks = [];
   t.days.forEach((d, k) => { const col = Math.floor((k + first) / 7); weeks[col] = (weeks[col] || 0) + d.count; });
   const last = weeks.slice(-16);
@@ -965,10 +926,10 @@ function telemetry(t) {
   ${p.back}
   ${tiles}
   ${cloudAt(40, 164, 0.22, { opacity: 0.95 })}
-  ${mono(68, 178, 'CHAKRA & COMMIT MATRIX  //  LAST 12 MONTHS', { fill: C.scarlet, ls: 2.5, weight: 700 })}
+  ${mono(68, 178, 'CONTRIBUTION ACTIVITY  //  LAST 12 MONTHS', { fill: C.scarlet, ls: 2.5, weight: 700 })}
   ${months.join('')}${weekdays}
   <g>${cells}</g>
-  ${mono(72, 378, `${fmt(t.total)} SIGNALS RECORDED`, { size: 10, fill: C.soft, ls: 1.5 })}
+  ${mono(72, 378, `${fmt(t.total)} CONTRIBUTIONS RECORDED`, { size: 10, fill: C.soft, ls: 1.5 })}
   ${mono(1032, 378, 'LOW', { anchor: 'end', size: 9, ls: 1, fill: C.muted })}${legend}${mono(1136, 378, 'HIGH', { size: 9, ls: 1, fill: C.muted })}
 
   <path d="${cutBox(40, 400, 550, 198, 12)}" fill="${C.void}" fill-opacity=".68" stroke="${C.lineBright}"/>
@@ -996,10 +957,15 @@ function telemetry(t) {
 
 async function snakeFrame() {
   let raw;
-  try { raw = await fs.readFile(SNAKE_SVG, 'utf8'); } catch { /* fallback to placeholder or existing */ }
+  try { raw = await fs.readFile(SNAKE_SVG, 'utf8'); } catch {
+    try {
+      const existing = await fs.readFile(path.join(OUT, 'snake.svg'), 'utf8');
+      const m = existing.match(/<svg x="40" y="56"[^>]*viewBox="([^"]+)">([\s\S]*?)<\/svg>/);
+      if (m) raw = `<svg viewBox="${m[1]}">${m[2]}</svg>`;
+    } catch { /* fallback to placeholder */ }
+  }
   const vb = raw?.match(/viewBox="([^"]+)"/)?.[1]?.split(/[\s,]+/).map(Number) ?? [0, 0, 880, 192];
   let inner = raw ? raw.replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '') : '';
-  // Ensure any blue colors in raw snake SVG are mapped to Akatsuki crimson palette
   if (inner) {
     inner = inner
       .replace(/#00F0FF/gi, C.scarlet)
@@ -1010,29 +976,29 @@ async function snakeFrame() {
   }
   const W = 1200, sw = 1120, sh = Math.round((sw * vb[3]) / vb[2]);
   const H = sh + 96;
-  const p = panel(W, H, { label: 'SUMMONING // CONTRIBUTION SERPENT', meta: 'AUTONOMOUS UNIT  //  DAILY PATROL', cloudOpacity: 0.08 });
+  const p = panel(W, H, { label: 'CONTRIBUTION GRAPH // AUTOMATED ACTIVITY', meta: 'AUTONOMOUS WORKFLOW  //  DAILY SYNC', cloudOpacity: 0.08 });
   const content = inner
     ? `<svg x="40" y="56" width="${sw}" height="${sh}" viewBox="${vb.join(' ')}">${inner}</svg>`
     : `
       <g>
         ${cloudAt(W / 2 - 48, H / 2 - 44, 0.95, { opacity: 0.25 })}
-        ${mono(W / 2, H / 2 + 12, 'SUMMONING CONTRACT ACTIVATES ON WORKFLOW RUN', { anchor: 'middle', fill: C.soft, ls: 3, weight: 700 })}
+        ${mono(W / 2, H / 2 + 12, 'CONTRIBUTION GRAPH DEPLOYS ON WORKFLOW RUN', { anchor: 'middle', fill: C.soft, ls: 3, weight: 700 })}
       </g>`;
-  return doc(W, H, 'Akatsuki Contribution Serpent', `<defs>${p.defs}</defs>${p.back}${content}${p.front}`);
+  return doc(W, H, 'Contribution activity graph', `<defs>${p.defs}</defs>${p.back}${content}${p.front}`);
 }
 
 /* ================================================================= main */
 
 await fs.mkdir(OUT, { recursive: true });
-console.log('Rendering static Akatsuki assets');
+console.log('Rendering static assets');
 await writeIfChanged('header.svg', await header());
 const sections = [
-  ['BINGO BOOK DOSSIER', '// s-rank operative identity, affiliation & active contracts'],
-  ['SHINOBI ARSENAL', '// core languages, interface jutsu, backend & cloud infrastructure'],
-  ['S-RANK MISSIONS', '// flagship enterprise, campus & neural systems'],
-  ['ANBU HARDENING & QA', '// cisco network security, iso/iec 25010 & data privacy'],
-  ['SHARINGAN TELEMETRY', '// live github intelligence, regenerated daily'],
-  ['CROW MESSENGER COMMS', '// direct transmission channels & network links'],
+  ['ENGINEER PROFILE', '// identity, academic credentials & active system deployments'],
+  ['TECHNICAL ARSENAL', '// languages, frameworks, data stores & cloud infrastructure'],
+  ['FEATURED SYSTEMS', '// production platforms, institutional architectures & ai pipelines'],
+  ['SECURITY & QUALITY AUDIT', '// cisco network security, iso/iec 25010 & data privacy'],
+  ['ENGINEERING TELEMETRY', '// live github analytics, regenerated daily'],
+  ['CONTACT & NETWORK', '// direct professional channels & developer profiles'],
 ];
 for (const [k, [t, s]] of sections.entries()) await writeIfChanged(`section-0${k + 1}.svg`, section(k + 1, t, s, 6));
 await writeIfChanged('dossier.svg', dossier());

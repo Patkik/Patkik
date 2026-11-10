@@ -1,24 +1,24 @@
 <div align="center">
 
-<img src="./assets/header.svg" width="100%" alt="Patrick Josh Añedez - Akatsuki Theme Full-Stack Developer, Systems and AI Engineer" />
+<img src="./assets/header.svg" width="100%" alt="Patrick Josh Añedez - Full-Stack Developer, Systems and AI Engineer" />
 
 </div>
 
 <br/>
 
-<img src="./assets/section-01.svg" width="100%" alt="01 Bingo Book Dossier" />
+<img src="./assets/section-01.svg" width="100%" alt="01 Engineer Profile" />
 
-<img src="./assets/dossier.svg" width="100%" alt="Bingo Book Dossier: 4th-Year BSIT student at Bukidnon State University, full-stack developer and systems architect. Active operations: BukSU CMS-V2, RacePulsePH, COMSOC Mentoring System, MedPulsePH, AudiobookTTSGenerator, World Supremacy Battlegrounds." />
+<img src="./assets/dossier.svg" width="100%" alt="Engineer dossier: 4th-Year BSIT student at Bukidnon State University, full-stack developer and systems architect. Active operations: BukSU CMS-V2, RacePulsePH, COMSOC Mentoring System, MedPulsePH, AudiobookTTSGenerator, World Supremacy Battlegrounds." />
 
 <br/><br/>
 
-<img src="./assets/section-02.svg" width="100%" alt="02 Shinobi Arsenal" />
+<img src="./assets/section-02.svg" width="100%" alt="02 Technical Arsenal" />
 
 <img src="./assets/arsenal.svg" width="100%" alt="Tech stack: Rust, TypeScript, JavaScript, Python, Java, Kotlin, C++, PHP, SQL, React.js, React Native, Next.js, Compose, Tailwind, Vite, PWA, PaddleOCR, Android, FastAPI, Express 5, Node.js, MongoDB Atlas, Redis, ChromaDB, MinIO S3, PostgreSQL, BullMQ, Celery, Docker, Cisco L2/L3, RFID/Sensors, GitHub Actions, AWS, Linux Admin, Axum/Tokio, Cursor Pro, Claude Code" />
 
 <br/><br/>
 
-<img src="./assets/section-03.svg" width="100%" alt="03 S-Rank Missions" />
+<img src="./assets/section-03.svg" width="100%" alt="03 Featured Systems" />
 
 <p align="center">
   <a href="https://github.com/Patkik/CMS-V2"><img src="./assets/project-cms-v2.svg" width="49%" alt="BukSU CMS-V2 Capstone Management System & Plagiarism Checker" /></a>
@@ -37,21 +37,21 @@
 
 <br/><br/>
 
-<img src="./assets/section-04.svg" width="100%" alt="04 ANBU Hardening & QA" />
+<img src="./assets/section-04.svg" width="100%" alt="04 Security & Quality Audit" />
 
 <img src="./assets/security-audit.svg" width="100%" alt="Enterprise Network Hardening, Cisco L2/L3 topology security, ISO/IEC 25010 4.51/5.00 evaluation, and Republic Act 10173 Data Privacy compliance" />
 
 <br/><br/>
 
-<img src="./assets/section-05.svg" width="100%" alt="05 Sharingan Telemetry" />
+<img src="./assets/section-05.svg" width="100%" alt="05 Engineering Telemetry" />
 
 <img src="./assets/telemetry.svg" width="100%" alt="GitHub telemetry: contributions, streaks, repositories, language composition and weekly output" />
 
-<img src="./assets/snake.svg" width="100%" alt="Akatsuki contribution serpent" />
+<img src="./assets/snake.svg" width="100%" alt="Contribution activity graph" />
 
 <br/><br/>
 
-<img src="./assets/section-06.svg" width="100%" alt="06 Crow Messenger Comms" />
+<img src="./assets/section-06.svg" width="100%" alt="06 Contact & Network" />
 
 <p align="center">
   <a href="mailto:patrickjoshanedez35@gmail.com"><img src="./assets/comms-email.svg" width="49%" alt="Email: patrickjoshanedez35@gmail.com" /></a>
@@ -63,7 +63,7 @@
 </p>
 
 <p align="center">
-  <img src="https://komarev.com/ghpvc/?username=Patkik&label=BINGO%20BOOK%20INSPECTIONS&color=B91C1C&labelColor=050406&style=for-the-badge" alt="Profile views" />
+  <img src="https://komarev.com/ghpvc/?username=Patkik&label=PROFILE%20VIEWS&color=B91C1C&labelColor=050406&style=for-the-badge" alt="Profile views" />
 </p>
 
-<img src="./assets/footer.svg" width="100%" alt="End of transmission" />
+<img src="./assets/footer.svg" width="100%" alt="End of portfolio" />
