@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="250" viewBox="0 0 1200 250" role="img" aria-label="Infrastructure Security, Cisco Hardening and ISO/IEC 25010 Evaluation"><title>Infrastructure Security, Cisco Hardening and ISO/IEC 25010 Evaluation</title><defs>
+      <linearGradient id="p-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0B1322"/><stop offset="1" stop-color="#060B14"/></linearGradient>
+      <linearGradient id="p-edge" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#00F0FF"/><stop offset=".5" stop-color="#3B82F6" stop-opacity=".3"/><stop offset="1" stop-color="#00F0FF"/></linearGradient>
+      <pattern id="p-grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#00F0FF" stroke-opacity=".035"/></pattern>
+      <clipPath id="p-clip"><path d="M23 1H1199V227L1177 249H1V23Z"/></clipPath>
+      <filter id="p-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M23 1H1199V227L1177 249H1V23Z" fill="url(#p-bg)"/><path d="M23 1H1199V227L1177 249H1V23Z" fill="url(#p-grid)"/><g transform="translate(40 62)">
+      <path d="M10 0H356V140L346 150H0V10Z" fill="#0F1A2E" stroke="#1C2A44"/>
+      <path d="M0 14L14 0" stroke="#3DFFB0" stroke-width="2"/>
+      <text x="16" y="24" font-family="'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" font-weight="400" fill="#3DFFB0" text-anchor="start" letter-spacing="1.5" >QA &amp; EVALUATION</text>
+      <text x="16" y="52" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#E6EDF3" text-anchor="start" letter-spacing="0" >ISO/IEC 25010</text>
+      <text x="340" y="36" font-family="'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="13" font-weight="700" fill="#3DFFB0" text-anchor="end" letter-spacing="1" >4.51 / 5.00</text>
+      <text x="340" y="52" font-family="'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="8.5" font-weight="400" fill="#7D8BA6" text-anchor="end" letter-spacing="1" >&quot;EXCELLENT&quot; RATING</text>
+      <line x1="16" y1="64" x2="340" y2="64" stroke="#1C2A44"/>
+      <circle cx="22" cy="84" r="2" fill="#3DFFB0"/><text x="32" y="88" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#B6C2D6" text-anchor="start" letter-spacing="0" >71 student &amp; faculty evaluators</text><circle cx="22" cy="106" r="2" fill="#3DFFB0"/><text x="32" y="110" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#B6C2D6" text-anchor="start" letter-spacing="0" >140-case structured QA test suite</text><circle cx="22" cy="128" r="2" fill="#3DFFB0"/><text x="32" y="132" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#B6C2D6" text-anchor="start" letter-spacing="0" >Automated regression test coverage</text>
+    </g><g transform="translate(422 62)">
+      <path d="M10 0H356V140L346 150H0V10Z" fill="#0F1A2E" stroke="#1C2A44"/>
+      <path d="M0 14L14 0" stroke="#00F0FF" stroke-width="2"/>
+      <text x="16" y="24" font-family="'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" font-weight="400" fill="#00F0FF" text-anchor="start" letter-spacing="1.5" >NETWORK HARDENING</text>
+      <text x="16" y="52" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#E6EDF3" text-anchor="start" letter-spacing="0" >Cisco L2/L3 Security</text>
+      <text x="340" y="36" font-family="'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="13" font-weight="700" fill="#00F0FF" text-anchor="end" letter-spacing="1" >SSHv2 / ACL</text>
+      <text x="340" y="52" font-family="'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="8.5" font-weight="400" fill="#7D8BA6" text-anchor="end" letter-spacing="1" >TOPOLOGY HARDENED</text>
+      <line x1="16" y1="64" x2="340" y2="64" stroke="#1C2A44"/>
+      <circle cx="22" cy="84" r="2" fill="#00F0FF"/><text x="32" y="88" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#B6C2D6" text-anchor="start" letter-spacing="0" >Multi-router Layer 2/3 topology</text><circle cx="22" cy="106" r="2" fill="#00F0FF"/><text x="32" y="110" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#B6C2D6" text-anchor="start" letter-spacing="0" >Telnet &amp; HTTP cleartext elimination</text><circle cx="22" cy="128" r="2" fill="#00F0FF"/><text x="32" y="132" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#B6C2D6" text-anchor="start" letter-spacing="0" >VLAN segmentation &amp; Extended ACLs</text>
+    </g><g transform="translate(804 62)">
+      <path d="M10 0H356V140L346 150H0V10Z" fill="#0F1A2E" stroke="#1C2A44"/>
+      <path d="M0 14L14 0" stroke="#38BDF8" stroke-width="2"/>
+      <text x="16" y="24" font-family="'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" font-weight="400" fill="#38BDF8" text-anchor="start" letter-spacing="1.5" >DATA COMPLIANCE</text>
+      <text x="16" y="52" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#E6EDF3" text-anchor="start" letter-spacing="0" >Legal &amp; Risk Privacy</text>
+      <text x="340" y="36" font-family="'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="13" font-weight="700" fill="#38BDF8" text-anchor="end" letter-spacing="1" >RA 10173</text>
+      <text x="340" y="52" font-family="'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="8.5" font-weight="400" fill="#7D8BA6" text-anchor="end" letter-spacing="1" >NPC &amp; GDPR AUDIT</text>
+      <line x1="16" y1="64" x2="340" y2="64" stroke="#1C2A44"/>
+      <circle cx="22" cy="84" r="2" fill="#38BDF8"/><text x="32" y="88" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#B6C2D6" text-anchor="start" letter-spacing="0" >Republic Act 10173 (DPA 2012) controls</text><circle cx="22" cy="106" r="2" fill="#38BDF8"/><text x="32" y="110" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#B6C2D6" text-anchor="start" letter-spacing="0" >HTTP-only JWT family token rotation</text><circle cx="22" cy="128" r="2" fill="#38BDF8"/><text x="32" y="132" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#B6C2D6" text-anchor="start" letter-spacing="0" >Atomic updates &amp; immutable audit trail</text>
+    </g>
+      <path d="M23 1H1199V227L1177 249H1V23Z" fill="none" stroke="#1C2A44" stroke-width="1.5"/>
+      <path d="M25 7H1193V225L1175 243H7V25Z" fill="none" stroke="url(#p-edge)" stroke-opacity=".28"/>
+      <path d="M1 23L23 1" stroke="#00F0FF" stroke-width="2.5" filter="url(#p-glow)"/>
+      <path d="M1199 227L1177 249" stroke="#00F0FF" stroke-width="2.5" filter="url(#p-glow)"/>
+      <path d="M1166 1H1199V34" fill="none" stroke="#00F0FF" stroke-width="2"/>
+      <path d="M1 216V249H34" fill="none" stroke="#00F0FF" stroke-width="2"/>
+      <path d="M40 1H462L450 27H52Z" fill="#1E3A8A" fill-opacity=".6" stroke="#00F0FF" stroke-opacity=".55"/>
+      <text x="251" y="18.5" font-family="'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="11" font-weight="400" fill="#00F0FF" text-anchor="middle" letter-spacing="2.5" >STANDARDS // INFRASTRUCTURE HARDENING &amp; QA</text>
+      <text x="1154" y="19" font-family="'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="11" font-weight="400" fill="#7D8BA6" text-anchor="end" letter-spacing="2" >VERIFIED ENGINEERING CONTROLS</text></svg>

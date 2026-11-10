@@ -1,0 +1,51 @@
+name: Profile Telemetry
+
+on:
+  schedule:
+    - cron: "17 */12 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/**"
+      - ".github/workflows/profile.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: profile-telemetry
+  cancel-in-progress: true
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Snake in the Abyssal palette. Transparent background so it sits inside the HUD frame.
+      - uses: Platane/snk/svg-only@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/snake.svg?color_snake=#00F0FF&color_dots=#111B2C,#123372,#1D5FD0,#12B5EE,#00F0FF&color_dot_border=#0D1117
+
+      - name: Render assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Optional: add a classic PAT (read:user) as METRICS_TOKEN to include private contributions.
+          METRICS_TOKEN: ${{ secrets.METRICS_TOKEN }}
+          PROFILE_USER: ${{ github.repository_owner }}
+        run: node scripts/generate.mjs
+
+      - name: Commit
+        run: |
+          git config user.name "abyssal-telemetry[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets
+          git diff --cached --quiet || (git commit -m "telemetry: resync profile assets [skip ci]" && git push)
