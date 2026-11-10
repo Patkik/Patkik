@@ -28,12 +28,12 @@ jobs:
         with:
           node-version: 22
 
-      # Snake in the Abyssal palette. Transparent background so it sits inside the HUD frame.
+      # Snake in the Akatsuki Crimson & Obsidian palette. Transparent background so it sits inside the HUD frame.
       - uses: Platane/snk/svg-only@v3
         with:
           github_user_name: ${{ github.repository_owner }}
           outputs: |
-            dist/snake.svg?color_snake=#00F0FF&color_dots=#111B2C,#123372,#1D5FD0,#12B5EE,#00F0FF&color_dot_border=#0D1117
+            dist/snake.svg?color_snake=#FF1E27&color_dots=#181116,#4A080C,#8B110B,#D90429,#FF1E27&color_dot_border=#050406
 
       - name: Render assets
         env:
@@ -45,7 +45,7 @@ jobs:
 
       - name: Commit
         run: |
-          git config user.name "abyssal-telemetry[bot]"
+          git config user.name "akatsuki-telemetry[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add assets
-          git diff --cached --quiet || (git commit -m "telemetry: resync profile assets [skip ci]" && git push)
+          git diff --cached --quiet || (git commit -m "telemetry: resync akatsuki profile assets [skip ci]" && git push)

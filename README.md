@@ -1,24 +1,24 @@
 <div align="center">
 
-<img src="./assets/header.svg" width="100%" alt="Patrick Josh Añedez - Full-Stack Developer, Systems and AI Engineer" />
+<img src="./assets/header.svg" width="100%" alt="Patrick Josh Añedez - Akatsuki Theme Full-Stack Developer, Systems and AI Engineer" />
 
 </div>
 
 <br/>
 
-<img src="./assets/section-01.svg" width="100%" alt="01 Operator Profile" />
+<img src="./assets/section-01.svg" width="100%" alt="01 Bingo Book Dossier" />
 
-<img src="./assets/dossier.svg" width="100%" alt="Operator dossier: 4th-Year BSIT student at Bukidnon State University, full-stack developer and systems architect. Active operations: BukSU CMS-V2, RacePulsePH, COMSOC Mentoring System, MedPulsePH, AudiobookTTSGenerator, World Supremacy Battlegrounds." />
-
-<br/><br/>
-
-<img src="./assets/section-02.svg" width="100%" alt="02 Arsenal" />
-
-<img src="./assets/arsenal.svg" width="100%" alt="Tech stack: Rust, TypeScript, JavaScript, Python, Java, Kotlin, C++, PHP, SQL, React.js, React Native, Next.js, Compose, Tailwind, Vite, PWA, Leaflet GIS, Android, FastAPI, Express 5, Node.js, MongoDB Atlas, Redis, ChromaDB, MinIO S3, PostgreSQL, BullMQ, Celery, Docker, Cisco L2/L3, RFID/Sensors, GitHub Actions, AWS, Linux Admin, Axum/Tokio, Cursor Pro, Claude Code" />
+<img src="./assets/dossier.svg" width="100%" alt="Bingo Book Dossier: 4th-Year BSIT student at Bukidnon State University, full-stack developer and systems architect. Active operations: BukSU CMS-V2, RacePulsePH, COMSOC Mentoring System, MedPulsePH, AudiobookTTSGenerator, World Supremacy Battlegrounds." />
 
 <br/><br/>
 
-<img src="./assets/section-03.svg" width="100%" alt="03 Field Operations" />
+<img src="./assets/section-02.svg" width="100%" alt="02 Shinobi Arsenal" />
+
+<img src="./assets/arsenal.svg" width="100%" alt="Tech stack: Rust, TypeScript, JavaScript, Python, Java, Kotlin, C++, PHP, SQL, React.js, React Native, Next.js, Compose, Tailwind, Vite, PWA, PaddleOCR, Android, FastAPI, Express 5, Node.js, MongoDB Atlas, Redis, ChromaDB, MinIO S3, PostgreSQL, BullMQ, Celery, Docker, Cisco L2/L3, RFID/Sensors, GitHub Actions, AWS, Linux Admin, Axum/Tokio, Cursor Pro, Claude Code" />
+
+<br/><br/>
+
+<img src="./assets/section-03.svg" width="100%" alt="03 S-Rank Missions" />
 
 <p align="center">
   <a href="https://github.com/Patkik/CMS-V2"><img src="./assets/project-cms-v2.svg" width="49%" alt="BukSU CMS-V2 Capstone Management System & Plagiarism Checker" /></a>
@@ -33,37 +33,25 @@
   <a href="https://github.com/Patkik/World-Supremacy-Battleground-app"><img src="./assets/project-wsb.svg" width="49%" alt="World Supremacy Battlegrounds Event Application" /></a>
 </p>
 
-<div align="center">
+<img src="./assets/archive-scrolls.svg" width="100%" alt="Additional Specialized Repositories: Kipit, Spirits of the Vale, Multi-Tenant SaaS Catering V2, Orchestrator Agentic System, Vortex Studio A.I, Barcelon Store" />
 
-```yaml
-SPECIALIZED_REPOSITORIES & OPEN_SOURCE_TOOLING:
-  - Kipit: "Native Android offline-first budget tracker (Kotlin / Compose / Room / Hilt)"
-  - Spirits of the Vale: "Core OOP game engine, state-machine behaviors & collision physics"
-  - WHAZE Flood Monitor: "IoT early-warning system (PWA / ESP32 telemetry / Leaflet GIS)"
-  - long-agent & Orchestrator: "Autonomous multi-step task orchestration with durable checkpoints"
-  - tanstack-query & web-guidelines: "Server-state synchronization & automated WCAG static audits"
-  - Vortex Studio A.I & SaaS Catering: "High-throughput media engines & multi-tenant architectures"
-```
+<br/><br/>
 
-</div>
-
-<br/>
-
-<img src="./assets/section-04.svg" width="100%" alt="04 Hardening & Audit" />
+<img src="./assets/section-04.svg" width="100%" alt="04 ANBU Hardening & QA" />
 
 <img src="./assets/security-audit.svg" width="100%" alt="Enterprise Network Hardening, Cisco L2/L3 topology security, ISO/IEC 25010 4.51/5.00 evaluation, and Republic Act 10173 Data Privacy compliance" />
 
 <br/><br/>
 
-<img src="./assets/section-05.svg" width="100%" alt="05 Telemetry" />
+<img src="./assets/section-05.svg" width="100%" alt="05 Sharingan Telemetry" />
 
 <img src="./assets/telemetry.svg" width="100%" alt="GitHub telemetry: contributions, streaks, repositories, language composition and weekly output" />
 
-<img src="./assets/snake.svg" width="100%" alt="Autonomous contribution hunter" />
+<img src="./assets/snake.svg" width="100%" alt="Akatsuki contribution serpent" />
 
 <br/><br/>
 
-<img src="./assets/section-06.svg" width="100%" alt="06 Comms Channel" />
+<img src="./assets/section-06.svg" width="100%" alt="06 Crow Messenger Comms" />
 
 <p align="center">
   <a href="mailto:patrickjoshanedez35@gmail.com"><img src="./assets/comms-email.svg" width="49%" alt="Email: patrickjoshanedez35@gmail.com" /></a>
@@ -75,7 +63,7 @@ SPECIALIZED_REPOSITORIES & OPEN_SOURCE_TOOLING:
 </p>
 
 <p align="center">
-  <img src="https://komarev.com/ghpvc/?username=Patkik&label=TRANSMISSIONS%20RECEIVED&color=1E3A8A&labelColor=0D1117&style=for-the-badge" alt="Profile views" />
+  <img src="https://komarev.com/ghpvc/?username=Patkik&label=BINGO%20BOOK%20INSPECTIONS&color=B91C1C&labelColor=050406&style=for-the-badge" alt="Profile views" />
 </p>
 
 <img src="./assets/footer.svg" width="100%" alt="End of transmission" />
